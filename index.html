@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meetingraum Konfigurator</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f5f7f9;
+  display:flex;
+  justify-content:center;
+}
+
+.container {
+  width:100%;
+  max-width:700px;
+  padding:20px;
+}
+
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.progress {
+  height:6px;
+  background:#ddd;
+  border-radius:5px;
+  overflow:hidden;
+}
+
+.progress-bar {
+  height:100%;
+  background:#009DDF;
+  width:0%;
+  transition:.3s;
+}
+
+.card-grid {
+  display:grid;
+  gap:15px;
+}
+
+.card {
+  padding:20px;
+  border-radius:12px;
+  background:white;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  cursor:pointer;
+  transition:.2s;
+}
+
+.card:hover {
+  transform:translateY(-3px);
+}
+
+.card.selected {
+  border:2px solid #009DDF;
+}
+
+button {
+  padding:12px 20px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.btn-primary {
+  background:#009DDF;
+  color:white;
+}
+
+.footer {
+  margin-top:30px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.hidden { display:none; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <h3>LOGO</h3>
+  </div>
+
+  <div class="progress">
+    <div class="progress-bar" id="progress"></div>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="footer">
+    <button onclick="prevStep()">Zurück</button>
+    <button class="btn-primary" onclick="nextStep()">Weiter</button>
+  </div>
+
+</div>
+
+<script>
+
+// STATE
+let step = 0;
+
+const data = {
+  roomSize:null,
+  budget:null,
+  display:null,
+  doorSign:null,
+};
+
+const steps = [
+
+  {
+    question: "Wie viele Personen nutzen den Raum typischerweise?",
+    key: "roomSize",
+    options: [
+      {label:"Huddle (1-4)", value:"huddle"},
+      {label:"Medium (5-8)", value:"medium"},
+      {label:"Large (9-16)", value:"large"},
+      {label:"Individual (17+)", value:"individual"}
+    ]
+  },
+
+  {
+    question: "Welches Budget ist geplant?",
+    key:"budget",
+    options:[
+      {label:"Unter 5.000 €", value:"low"},
+      {label:"5.000 € – 15.000 €", value:"mid"},
+      {label:"Über 15.000 €", value:"high"}
+    ]
+  },
+
+  {
+    question:"Welche Display-Lösung wird benötigt?",
+    key:"display",
+    options:[
+      {label:"Single Display", value:"single"},
+      {label:"Dual Display", value:"dual"},
+      {label:"Touch Display", value:"touch"}
+    ]
+  },
+
+  {
+    question:"Soll ein digitales Türschild integriert werden?",
+    key:"doorSign",
+    options:[
+      {label:"Ja", value:true},
+      {label:"Nein", value:false}
+    ]
+  },
+
+  {
+    summary:true
+  }
+
+];
+
+
+// RENDER
+function render() {
+
+  const app = document.getElementById("app");
+  const current = steps[step];
+
+  updateProgress();
+
+  if(current.summary) {
+    app.innerHTML = `
+      <h2>Zusammenfassung</h2>
+      <pre>${JSON.stringify(data,null,2)}</pre>
+      <button class="btn-primary" onclick="submit()">Anfrage senden</button>
+    `;
+    return;
+  }
+
+  let html = `<h2>${current.question}</h2><div class="card-grid">`;
+
+  current.options.forEach(opt => {
+
+    let disabled = false;
+
+    // RULE: Huddle blocks dual
+    if(current.key === "display" && data.roomSize === "huddle" && opt.value === "dual") {
+      disabled = true;
+    }
+
+    html += `
+      <div class="card ${data[current.key]===opt.value?"selected":""} 
+           onclick="${disabled?'':`selectOption('${current.key}','${opt.value}')`}">
+
+        <h3>${opt.label}</h3>
+
+        ${disabled ? '<small>Für kleine Räume nicht empfohlen</small>' : ''}
+
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  // Hinweis für Individual
+  if(data.roomSize === "individual") {
+    html += `<p style="margin-top:15px;">⚠️ Individuelle Beratung empfohlen</p>`;
+  }
+
+  app.innerHTML = html;
+}
+
+function selectOption(key, value) {
+  data[key] = value;
+  render();
+}
+
+function nextStep() {
+  if(step < steps.length -1) {
+    step++;
+    render();
+  }
+}
+
+function prevStep() {
+  if(step > 0) {
+    step--;
+    render();
+  }
+}
+
+function updateProgress() {
+  let progress = ((step+1)/steps.length)*100;
+  document.getElementById("progress").style.width = progress+"%";
+}
+
+function submit() {
+
+  const payload = {
+    ...data,
+    contact:{
+      name:"",
+      company:"",
+      email:"",
+      phone:""
+    }
+  };
+
+  console.log("SEND:", payload);
+
+  alert("Demo: Anfrage gesendet!");
+}
+
+// INIT
+render();
+
+</script>
+
+</body>
+</html>
