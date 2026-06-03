@@ -9,6 +9,7 @@
   <style>
     :root {
       --brand: #009DDF;
+      --brand-dark: #087db0;
       --bg: #f5f4f1;
       --surface: #ffffff;
       --text: #131313;
@@ -18,9 +19,10 @@
       --line-strong: #d7d4cd;
       --success: #1e7e34;
       --warning: #9a5f08;
+      --danger: #b3261e;
       --radius: 16px;
       --radius-lg: 20px;
-      --max: 880px;
+      --max: 980px;
       --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
       --shadow-soft: 0 12px 28px rgba(20,20,20,.05);
       --shadow-card: 0 14px 32px rgba(20,20,20,.06);
@@ -38,7 +40,7 @@
       text-rendering: optimizeLegibility;
     }
 
-    button, input, textarea { font: inherit; }
+    button, input, textarea, select { font: inherit; }
     .app { max-width: var(--max); margin: 0 auto; }
 
     .topbar {
@@ -98,15 +100,62 @@
       background: #fff;
       border: 1px solid var(--line);
       overflow: hidden;
-      margin-bottom: 26px;
+      margin-bottom: 14px;
     }
 
     .progress-bar {
       width: 0;
       height: 100%;
-      background: var(--brand);
+      background: linear-gradient(90deg, var(--brand), #27b5ef);
       border-radius: inherit;
       transition: width .45s var(--ease);
+    }
+
+    .step-nav-wrap {
+      margin-bottom: 26px;
+    }
+
+    .step-nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 2px 6px;
+      scrollbar-width: thin;
+    }
+
+    .step-nav::-webkit-scrollbar { height: 8px; }
+    .step-nav::-webkit-scrollbar-thumb { background: #d9d6cf; border-radius: 999px; }
+
+    .step-chip {
+      appearance: none;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: .84rem;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: .2s ease;
+      flex: 0 0 auto;
+    }
+
+    .step-chip.current {
+      background: #111;
+      color: #fff;
+      border-color: #111;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .step-chip.done {
+      border-color: rgba(0,157,223,.35);
+      color: var(--brand-dark);
+      background: linear-gradient(180deg, #fff, #f7fcff);
+    }
+
+    .step-chip.locked {
+      opacity: .48;
+      cursor: not-allowed;
     }
 
     .hero {
@@ -119,7 +168,7 @@
       line-height: 1.08;
       letter-spacing: -0.03em;
       font-weight: 600;
-      max-width: 16ch;
+      max-width: 18ch;
       color: var(--text);
     }
 
@@ -171,12 +220,13 @@
       color: inherit;
       text-align: left;
       padding: 18px;
-      min-height: 188px;
+      min-height: 210px;
       display: flex;
       flex-direction: column;
       gap: 14px;
       cursor: pointer;
       transition: transform .24s var(--ease), border-color .24s var(--ease), box-shadow .24s var(--ease), background .24s var(--ease);
+      overflow: hidden;
     }
 
     .card:hover {
@@ -202,9 +252,11 @@
     .meta {
       display: flex;
       justify-content: space-between;
-      gap: 12px;
       align-items: flex-start;
+      gap: 12px;
     }
+
+    .meta > div { min-width: 0; }
 
     .card-title {
       margin: 0 0 6px;
@@ -213,6 +265,7 @@
       letter-spacing: -0.02em;
       line-height: 1.25;
       color: var(--text);
+      overflow-wrap: anywhere;
     }
 
     .card-desc {
@@ -220,6 +273,7 @@
       font-size: .9rem;
       line-height: 1.58;
       color: #565652;
+      overflow-wrap: anywhere;
     }
 
     .mini-label {
@@ -234,214 +288,41 @@
       border: 1px solid #ece9e2;
       border-radius: 999px;
       padding: 6px 9px;
+      max-width: 42%;
+      text-align: center;
+      justify-content: center;
+      overflow-wrap: anywhere;
     }
 
     .illustration {
-      height: 86px;
+      height: 104px;
       border-radius: 14px;
-      background: #f7f7f4;
+      background: linear-gradient(180deg, #fafaf7, #f4f3ef);
       border: 1px solid #efede7;
       position: relative;
       overflow: hidden;
     }
 
-    .room-illu::before {
-      content: "";
-      position: absolute;
-      inset: 18px 22px 16px;
-      background: #fff;
-      border: 1px solid #eceae5;
-      border-radius: 14px;
-    }
-
-    .room-illu::after {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 34%;
-      height: 10px;
-      border-radius: 999px;
-      background: var(--brand);
-    }
-
-    .people {
-      position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 10px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      justify-content: center;
-    }
-
-    .person {
-      width: 12px;
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(0,157,223,.86);
-    }
-
-    .display-illu.single::before,
-    .display-illu.dual::before,
-    .display-illu.dual::after {
-      content: "";
-      position: absolute;
-      top: 18px;
-      width: 64px;
-      height: 38px;
-      border-radius: 10px;
-      background: #171717;
-      box-shadow: inset 0 0 0 2px #e8f7fd;
-    }
-
-    .display-illu.single::before { left: 50%; transform: translateX(-50%); }
-    .display-illu.dual::before { left: 18px; }
-    .display-illu.dual::after { right: 18px; }
-
-    .display-illu.single span,
-    .display-illu.dual span {
-      position: absolute;
-      left: 50%;
-      bottom: 12px;
-      transform: translateX(-50%);
-      width: 42px;
-      height: 4px;
-      border-radius: 999px;
-      background: #b9b7b0;
-      display: block;
-    }
-
-    .display-illu.touch::before {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 12px;
-      width: 92px;
-      height: 58px;
-      transform: translateX(-50%);
-      border-radius: 16px;
-      background: linear-gradient(180deg, #122333, #1e3e54);
-      box-shadow: inset 0 0 0 2px #e8f7fd;
-    }
-
-    .display-illu.touch::after {
-      content: "";
-      position: absolute;
-      right: 20px;
-      bottom: 12px;
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      background: var(--brand);
-      box-shadow: 0 0 0 8px rgba(0,157,223,.10);
-    }
-
-    .display-illu.touch span {
-      position: absolute;
-      left: 50%;
-      top: 28px;
-      width: 22px;
-      height: 22px;
-      transform: translateX(-50%);
-      border-radius: 999px;
-      border: 2px solid rgba(255,255,255,.92);
-      background: rgba(255,255,255,.10);
-      display: block;
-    }
-
-    .door-illu::before {
-      content: "";
-      position: absolute;
-      left: 18px;
-      top: 14px;
-      width: 52px;
-      height: 58px;
-      border-radius: 12px 12px 0 0;
-      border: 1px solid #e6e3dc;
-      background: #fff;
-    }
-
-    .door-illu::after {
-      content: "";
-      position: absolute;
-      left: 82px;
-      top: 28px;
-      width: 48px;
-      height: 18px;
-      border-radius: 6px;
-      background: var(--brand);
-    }
-
-    .mount-illu.wall::before,
-    .mount-illu.free::before {
-      content: "";
-      position: absolute;
-      inset: 18px 20px auto;
-      height: 34px;
-      background: #171717;
-      border-radius: 10px;
-      box-shadow: inset 0 0 0 2px #edf7fb;
-    }
-
-    .mount-illu.wall::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 56px;
-      width: 4px;
-      height: 18px;
-      transform: translateX(-50%);
-      border-radius: 999px;
-      background: #999791;
-    }
-
-    .mount-illu.free::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 52px;
-      transform: translateX(-50%);
-      width: 34px;
-      height: 18px;
-      border: 3px solid #999791;
-      border-top: 0;
-      border-radius: 0 0 14px 14px;
-    }
-
-    .ceiling-illu::before {
-      content: "";
-      position: absolute;
-      left: 14px;
-      right: 14px;
-      top: 16px;
-      height: 4px;
-      border-radius: 999px;
-      background: #d4d2cc;
-    }
-
-    .ceiling-illu::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 22px;
-      transform: translateX(-50%);
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: var(--brand);
-      box-shadow: 0 0 0 8px rgba(0,157,223,.10);
-    }
-
-    .grid-note {
+    .image-frame {
+      width: 100%;
+      height: 100%;
       display: grid;
       place-items: center;
-      text-align: center;
-      color: var(--muted);
-      font-size: .88rem;
-      padding: 12px;
+      color: #9b9890;
+      font-size: .76rem;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      background: repeating-linear-gradient(135deg, #f6f5f1 0px, #f6f5f1 8px, #f2f1ed 8px, #f2f1ed 16px);
+    }
+
+    .room-svg,
+    .display-svg,
+    .mount-svg,
+    .door-svg,
+    .mic-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
     .summary-grid,
@@ -481,7 +362,7 @@
     label { font-size: .9rem; color: #2f2f2c; }
     .required { color: #cf2f2f; }
 
-    input, textarea {
+    input, textarea, select {
       width: 100%;
       min-height: 48px;
       padding: 12px 14px;
@@ -494,7 +375,7 @@
     }
 
     textarea { min-height: 110px; resize: vertical; }
-    input:focus, textarea:focus {
+    input:focus, textarea:focus, select:focus {
       border-color: rgba(0,157,223,.4);
       box-shadow: 0 0 0 3px rgba(0,157,223,.10);
     }
@@ -516,10 +397,32 @@
       box-shadow: none;
     }
 
+    details.debug {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    details.debug summary {
+      cursor: pointer;
+      padding: 14px 16px;
+      color: var(--muted);
+      font-size: .9rem;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    details.debug summary::-webkit-details-marker { display: none; }
+
     .json-preview {
       background: #111;
       color: #e8f6fb;
-      border-radius: 14px;
+      margin: 0;
+      border-radius: 0;
       padding: 16px;
       overflow: auto;
       font-size: .86rem;
@@ -590,6 +493,7 @@
       .actions { flex-direction: column; align-items: stretch; }
       .btn-row, .btn { width: 100%; }
       .title { max-width: 14ch; }
+      .step-chip { font-size: .8rem; }
     }
   </style>
 </head>
@@ -602,10 +506,14 @@
         </div>
         <h1>Meetingraum-Konfigurator</h1>
       </div>
-      <div class="step-counter" id="progressLabel">Schritt 1 von 9</div>
+      <div class="step-counter" id="progressLabel">Schritt 1 von 10</div>
     </header>
 
     <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div class="step-nav-wrap">
+      <nav class="step-nav" id="stepNav" aria-label="Schrittübersicht"></nav>
+    </div>
 
     <section class="hero">
       <h2 class="title" id="stepTitle">Wie viele Personen nutzen den Raum typischerweise?</h2>
@@ -625,8 +533,11 @@
   </div>
 
   <script>
+    const SUMMARY_KEY = 'summary';
+
     const state = {
       currentStep: 0,
+      maxVisitedStep: 0,
       answers: {
         roomSize: "",
         budget: "",
@@ -636,6 +547,7 @@
         ceilingMic: "",
         requirements: [],
         roomConditions: [],
+        manufacturer: "",
         contact: {
           name: "",
           company: "",
@@ -673,60 +585,75 @@
         speaker_tracking: "Speaker Tracking",
         auto_framing: "Auto Framing",
         byod: "BYOD Nutzung",
-        mtr: "Microsoft Teams Rooms",
-        zoom: "Zoom Rooms"
+        content_sharing: "Content Sharing"
       },
       roomConditions: {
         glass: "Viel Glas",
         poor_acoustics: "Schlechte Akustik",
         acoustic_panels: "Akustikpaneele vorhanden",
-        acoustic_measurement: "Raumakustik Messung gewünscht",
+        acoustic_measurement: "Raumakustik-Messung gewünscht",
         high_ceilings: "Hohe Decken",
         sunlight: "Starke Sonneneinstrahlung"
+      },
+      manufacturer: {
+        lenovo: "Lenovo",
+        yealink: "Yealink",
+        crestron: "Crestron",
+        logitech: "Logitech",
+        poly: "Poly",
+        neat: "Neat",
+        no_preference: "Egal / Beratung erwünscht"
       }
     };
 
     const steps = [
       {
         key: "roomSize",
+        navLabel: "Raumgröße",
         title: "Wie viele Personen nutzen den Raum typischerweise?",
         subtitle: "Wählen Sie die passende Raumgröße. Die nächsten Schritte passen sich daran an.",
         type: "single",
         note: () => state.answers.roomSize === "individual"
-          ? "Für Räume ab 17 Personen empfehlen wir eine individuelle Beratung. Sie können den Konfigurator trotzdem fortsetzen."
+          ? "Für Räume ab 17 Personen springen wir direkt zur Anfrage, damit wir die Lösung individuell planen können."
           : "",
         options: [
           { value: "huddle", title: "Huddle", desc: "1–4 Personen", tag: "Klein", people: 4 },
-          { value: "medium", title: "Medium", desc: "5–8 Personen", tag: "Standard", people: 8 },
+          { value: "medium", title: "Medium", desc: "5–8 Personen", tag: "Standard", people: 6 },
           { value: "large", title: "Large", desc: "9–16 Personen", tag: "Groß", people: 12 },
-          { value: "individual", title: "Individual", desc: "17+ Personen", tag: "Beratung", people: 16 }
+          { value: "individual", title: "Individual", desc: "17+ Personen", tag: "Beratung", people: 18 }
         ]
       },
       {
         key: "budget",
+        navLabel: "Budget",
         title: "Welches Budget ist geplant?",
         subtitle: "Die Budgetspanne hilft bei der Einordnung der passenden Lösung.",
         type: "single",
+        helper: () => ["large", "individual"].includes(state.answers.roomSize)
+          ? "Für große bzw. individuell geplante Räume ist ein Budget unter 5.000 € deaktiviert."
+          : "",
         options: [
-          { value: "under_5000", title: "Unter 5.000 €", desc: "Einstiegslösung", tag: "Budget" },
-          { value: "between_5000_15000", title: "5.000 € – 15.000 €", desc: "Ausgewogene Ausstattung", tag: "Empfohlen" },
-          { value: "over_15000", title: "Über 15.000 €", desc: "Premium-Setup", tag: "High-End" }
+          { value: "under_5000", title: "Unter 5.000 €", desc: "Einstiegslösung", tag: "Budget", disabled: () => ["large", "individual"].includes(state.answers.roomSize) },
+          { value: "between_5000_15000", title: "5.000 € – 15.000 €", desc: "Standardlösung", tag: "Standard" },
+          { value: "over_15000", title: "Über 15.000 €", desc: "Premium-Setup", tag: "Premium" }
         ]
       },
       {
         key: "display",
+        navLabel: "Display",
         title: "Welche Display-Lösung wird benötigt?",
         subtitle: "Die Displaywahl beeinflusst Zusammenarbeit, Platzbedarf und Montage.",
         type: "single",
         helper: () => state.answers.roomSize === "huddle" ? "Dual Display ist für Huddle-Räume deaktiviert." : "",
         options: [
           { value: "single", title: "Single Display", desc: "Ein zentrales Display", tag: "Klassisch" },
-          { value: "dual", title: "Dual Display", desc: "Zwei getrennte Displays", tag: "Erweitert", disabled: () => state.answers.roomSize === "huddle" },
-          { value: "touch", title: "Touch Display", desc: "Ein interaktives Touch-Display", tag: "Interaktiv" }
+          { value: "dual", title: "Dual Display", desc: "Zwei nebeneinander montierte Displays", tag: "Erweitert", disabled: () => state.answers.roomSize === "huddle" },
+          { value: "touch", title: "Touch Display", desc: "Interaktives Display für Kollaboration", tag: "Interaktiv" }
         ]
       },
       {
         key: "doorSign",
+        navLabel: "Türschild",
         title: "Soll ein digitales Türschild integriert werden?",
         subtitle: "Optional für Raumstatus und Buchungsanzeige.",
         type: "single",
@@ -737,16 +664,18 @@
       },
       {
         key: "mounting",
+        navLabel: "Montage",
         title: "Welche Montageart ist möglich?",
         subtitle: "Davon hängen Hardware und Installationsaufwand ab.",
         type: "single",
         options: [
           { value: "wall", title: "Wandmontage", desc: "Fest installiert", tag: "Fix" },
-          { value: "free", title: "Freistehend", desc: "Flexibler Aufbau", tag: "Flexibel" }
+          { value: "free", title: "Freistehend", desc: "Auf Standfuß / Trolley", tag: "Flexibel" }
         ]
       },
       {
         key: "ceilingMic",
+        navLabel: "Mikrofon",
         title: "Kann ein Mikrofon an der Decke montiert werden?",
         subtitle: "Wichtig für die Auswahl der Audiolösung.",
         type: "single",
@@ -758,6 +687,7 @@
       },
       {
         key: "requirements",
+        navLabel: "Funktionen",
         title: "Welche Funktionen werden benötigt?",
         subtitle: "Mehrfachauswahl möglich.",
         type: "multi",
@@ -767,12 +697,12 @@
           { value: "speaker_tracking", title: "Speaker Tracking", desc: "Fokus auf Sprecher", tag: "AI" },
           { value: "auto_framing", title: "Auto Framing", desc: "Automatische Bildanpassung", tag: "AI" },
           { value: "byod", title: "BYOD Nutzung", desc: "Eigene Geräte nutzen", tag: "Flexibel" },
-          { value: "mtr", title: "Microsoft Teams Rooms", desc: "Native Teams-Raumerfahrung", tag: "Plattform" },
-          { value: "zoom", title: "Zoom Rooms", desc: "Native Zoom-Raumerfahrung", tag: "Plattform" }
+          { value: "content_sharing", title: "Content Sharing", desc: "Einfache Inhaltsfreigabe", tag: "Collab" }
         ]
       },
       {
         key: "roomConditions",
+        navLabel: "Besonderheiten",
         title: "Welche Besonderheiten hat der Raum?",
         subtitle: "Mehrfachauswahl möglich.",
         type: "multi",
@@ -780,13 +710,30 @@
           { value: "glass", title: "Viel Glas", desc: "Reflexionen beachten", tag: "Licht" },
           { value: "poor_acoustics", title: "Schlechte Akustik", desc: "Sprachverständlichkeit optimieren", tag: "Akustik" },
           { value: "acoustic_panels", title: "Akustikpaneele vorhanden", desc: "Gute Voraussetzung", tag: "Akustik" },
-          { value: "acoustic_measurement", title: "Raumakustik Messung gewünscht", desc: "Beratung erwünscht", tag: "Service" },
+          { value: "acoustic_measurement", title: "Raumakustik-Messung gewünscht", desc: "Beratung erwünscht", tag: "Service" },
           { value: "high_ceilings", title: "Hohe Decken", desc: "Wichtig für Montage", tag: "Baulich" },
           { value: "sunlight", title: "Starke Sonneneinstrahlung", desc: "Display-Helligkeit beachten", tag: "Licht" }
         ]
       },
       {
-        key: "summary",
+        key: "manufacturer",
+        navLabel: "Hersteller",
+        title: "Welchen MTR-Hersteller bevorzugen Sie?",
+        subtitle: "Optional zur besseren Einordnung Ihrer bevorzugten Lösung.",
+        type: "single",
+        options: [
+          { value: "lenovo", title: "Lenovo", desc: "MTR-Systeme von Lenovo", tag: "MTR" },
+          { value: "yealink", title: "Yealink", desc: "MeetingBar und MVC Serien", tag: "MTR" },
+          { value: "crestron", title: "Crestron", desc: "Controller und Integrationslösungen", tag: "MTR" },
+          { value: "logitech", title: "Logitech", desc: "Rally, Tap und Roommate", tag: "MTR" },
+          { value: "poly", title: "Poly", desc: "Studio X und G Serie", tag: "MTR" },
+          { value: "neat", title: "Neat", desc: "Neat Board und Neat Bar", tag: "MTR" },
+          { value: "no_preference", title: "Egal / Beratung erwünscht", desc: "Noch keine Präferenz", tag: "Offen" }
+        ]
+      },
+      {
+        key: SUMMARY_KEY,
+        navLabel: "Kontakt",
         title: "Zusammenfassung Ihrer Konfiguration",
         subtitle: "Prüfen Sie die Angaben und senden Sie anschließend die Anfrage ab.",
         type: "summary"
@@ -802,7 +749,8 @@
       content: document.getElementById("content"),
       footerNote: document.getElementById("footerNote"),
       nextBtn: document.getElementById("nextBtn"),
-      backBtn: document.getElementById("backBtn")
+      backBtn: document.getElementById("backBtn"),
+      stepNav: document.getElementById("stepNav")
     };
 
     function escapeHtml(value = "") {
@@ -836,56 +784,258 @@
       return { current, total, percent: Math.round((current / total) * 100) };
     }
 
+    function markVisited(index) {
+      state.maxVisitedStep = Math.max(state.maxVisitedStep, index);
+    }
+
+    function summaryIndex() {
+      return steps.findIndex((s) => s.key === SUMMARY_KEY);
+    }
+
+    function updateDependencies(changedKey, changedValue) {
+      if (changedKey === 'roomSize') {
+        if (changedValue === 'huddle' && state.answers.display === 'dual') {
+          state.answers.display = '';
+        }
+        if (['large', 'individual'].includes(changedValue) && state.answers.budget === 'under_5000') {
+          state.answers.budget = '';
+        }
+      }
+    }
+
+    function goToStep(index) {
+      state.currentStep = index;
+      markVisited(index);
+      render();
+    }
+
+    function renderStepNav() {
+      els.stepNav.innerHTML = steps.map((step, index) => {
+        const isCurrent = index === state.currentStep;
+        const canJump = index <= state.maxVisitedStep;
+        const done = index < state.currentStep || (index < steps.length - 1 && isStepComplete(step));
+        return `
+          <button
+            type="button"
+            class="step-chip ${isCurrent ? 'current' : ''} ${done ? 'done' : ''} ${canJump ? '' : 'locked'}"
+            data-step-index="${index}"
+            ${canJump ? '' : 'disabled'}
+          >${escapeHtml(step.navLabel || `Schritt ${index + 1}`)}</button>
+        `;
+      }).join('');
+
+      els.stepNav.querySelectorAll('.step-chip').forEach((el) => {
+        el.addEventListener('click', () => {
+          const index = Number(el.dataset.stepIndex);
+          if (Number.isInteger(index) && index <= state.maxVisitedStep) {
+            goToStep(index);
+          }
+        });
+      });
+    }
+
+    function renderImageOrFallback(option, fallbackHtml) {
+      if (option.image) {
+        return `
+          <div class="illustration">
+            <img src="${escapeHtml(option.image)}" alt="${escapeHtml(option.title)}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.closest('.illustration').innerHTML='<div class=\'image-frame\'>Bild-Platzhalter</div>'">
+          </div>
+        `;
+      }
+      return fallbackHtml;
+    }
+
+    function roomSceneSvg(type, option) {
+      const presets = {
+        huddle: { width: 70, height: 44, rx: 22, seats: [[50,18],[28,50],[50,82],[72,50]], radius: 4 },
+        medium: { width: 98, height: 40, rx: 16, seats: [[22,28],[22,72],[40,17],[40,83],[60,17],[60,83],[78,28],[78,72]], radius: 4 },
+        large: { width: 124, height: 32, rx: 16, seats: [[14,26],[14,50],[14,74],[32,18],[32,82],[50,18],[50,82],[68,18],[68,82],[86,18],[86,82],[104,26],[104,50],[104,74]], radius: 3.5 },
+        individual: { width: 128, height: 28, rx: 14, seats: [[8,20],[8,36],[8,52],[8,68],[8,84],[26,12],[26,92],[44,12],[44,92],[62,12],[62,92],[80,12],[80,92],[98,12],[98,92],[116,20],[116,36],[116,52],[116,68],[116,84]], radius: 3.2 }
+      };
+      const p = presets[type] || presets.medium;
+      const tableX = (160 - p.width) / 2;
+      const tableY = (100 - p.height) / 2;
+      const chairs = p.seats.map(([x,y]) => `<circle cx="${x}" cy="${y}" r="${p.radius}" fill="rgba(0,157,223,.9)"/>`).join('');
+      const banner = option.value === 'individual'
+        ? '<rect x="52" y="10" width="56" height="10" rx="5" fill="#eaf7fd" stroke="#cfefff"/><text x="80" y="17" text-anchor="middle" font-size="6" fill="#087db0" font-family="Sora, sans-serif">INDIVIDUELL</text>'
+        : '<rect x="58" y="10" width="44" height="10" rx="5" fill="#009DDF" opacity=".18"/><rect x="70" y="12.5" width="20" height="5" rx="2.5" fill="#009DDF"/>';
+
+      return renderImageOrFallback(option, `
+        <div class="illustration">
+          <svg viewBox="0 0 160 100" class="room-svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="tableGrad-${type}" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="100%" stop-color="#f3f2ee"/>
+              </linearGradient>
+            </defs>
+            ${banner}
+            <rect x="${tableX}" y="${tableY}" width="${p.width}" height="${p.height}" rx="${p.rx}" fill="url(#tableGrad-${type})" stroke="#e3e0d9" stroke-width="1.3"/>
+            <rect x="${tableX + 8}" y="${tableY + 6}" width="${Math.max(18, p.width - 16)}" height="${Math.max(10, p.height - 12)}" rx="${Math.max(8, p.rx - 6)}" fill="#fbfbf9" stroke="#efede7" stroke-width="0.8"/>
+            ${chairs}
+          </svg>
+        </div>
+      `);
+    }
+
+    function displaySceneSvg(type, option) {
+      if (type === 'single') {
+        return renderImageOrFallback(option, `
+          <div class="illustration">
+            <svg viewBox="0 0 160 100" class="display-svg" aria-hidden="true">
+              <rect x="34" y="20" width="92" height="50" rx="10" fill="#171717"/>
+              <rect x="39" y="25" width="82" height="40" rx="7" fill="#e8f7fd"/>
+              <rect x="72" y="74" width="16" height="4" rx="2" fill="#a6a39b"/>
+              <rect x="60" y="78" width="40" height="5" rx="2.5" fill="#c8c5be"/>
+            </svg>
+          </div>
+        `);
+      }
+      if (type === 'dual') {
+        return renderImageOrFallback(option, `
+          <div class="illustration">
+            <svg viewBox="0 0 160 100" class="display-svg" aria-hidden="true">
+              <rect x="20" y="24" width="56" height="34" rx="8" fill="#171717"/>
+              <rect x="84" y="24" width="56" height="34" rx="8" fill="#171717"/>
+              <rect x="24" y="28" width="48" height="26" rx="5" fill="#e8f7fd"/>
+              <rect x="88" y="28" width="48" height="26" rx="5" fill="#e8f7fd"/>
+              <rect x="44" y="62" width="72" height="4" rx="2" fill="#a6a39b"/>
+              <rect x="32" y="66" width="96" height="6" rx="3" fill="#c8c5be"/>
+            </svg>
+          </div>
+        `);
+      }
+      return renderImageOrFallback(option, `
+        <div class="illustration">
+          <svg viewBox="0 0 160 100" class="display-svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="touchGrad" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stop-color="#17384c"/>
+                <stop offset="100%" stop-color="#244a62"/>
+              </linearGradient>
+            </defs>
+            <rect x="36" y="12" width="88" height="58" rx="14" fill="url(#touchGrad)"/>
+            <rect x="42" y="18" width="76" height="46" rx="10" fill="#173346" stroke="#e8f7fd" stroke-width="1.3"/>
+            <circle cx="80" cy="41" r="11" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.9)" stroke-width="1.5"/>
+            <circle cx="110" cy="67" r="5" fill="#009DDF"/>
+            <circle cx="110" cy="67" r="12" fill="rgba(0,157,223,.12)"/>
+            <rect x="68" y="74" width="24" height="4" rx="2" fill="#a6a39b"/>
+            <rect x="58" y="78" width="44" height="5" rx="2.5" fill="#c8c5be"/>
+          </svg>
+        </div>
+      `);
+    }
+
+    function doorSignSvg(option) {
+      const active = option.value === 'yes';
+      return renderImageOrFallback(option, `
+        <div class="illustration">
+          <svg viewBox="0 0 160 100" class="door-svg" aria-hidden="true">
+            <rect x="20" y="16" width="48" height="68" rx="8" fill="#fff" stroke="#e7e4dd"/>
+            <circle cx="58" cy="50" r="2.8" fill="#bfbcb5"/>
+            <rect x="84" y="28" width="56" height="30" rx="8" fill="#ffffff" stroke="#e0ddd6"/>
+            <rect x="90" y="34" width="44" height="8" rx="4" fill="${active ? '#dff5e5' : '#f2f1ed'}"/>
+            <rect x="90" y="46" width="26" height="4" rx="2" fill="#c2bfb8"/>
+            <rect x="120" y="46" width="14" height="4" rx="2" fill="${active ? '#1e7e34' : '#b7b4ad'}"/>
+            <circle cx="128" cy="38" r="4" fill="${active ? '#2ea44f' : '#d0cdc6'}"/>
+          </svg>
+        </div>
+      `);
+    }
+
+    function mountSvg(type, option) {
+      if (type === 'wall') {
+        return renderImageOrFallback(option, `
+          <div class="illustration">
+            <svg viewBox="0 0 160 100" class="mount-svg" aria-hidden="true">
+              <rect x="20" y="16" width="10" height="68" rx="4" fill="#ece9e2"/>
+              <rect x="44" y="22" width="78" height="42" rx="10" fill="#171717"/>
+              <rect x="49" y="27" width="68" height="32" rx="7" fill="#e8f7fd"/>
+              <rect x="34" y="40" width="14" height="6" rx="3" fill="#9d9a92"/>
+              <rect x="72" y="66" width="22" height="4" rx="2" fill="#a6a39b"/>
+            </svg>
+          </div>
+        `);
+      }
+      return renderImageOrFallback(option, `
+        <div class="illustration">
+          <svg viewBox="0 0 160 100" class="mount-svg" aria-hidden="true">
+            <rect x="44" y="18" width="72" height="40" rx="10" fill="#171717"/>
+            <rect x="49" y="23" width="62" height="30" rx="7" fill="#e8f7fd"/>
+            <rect x="76" y="58" width="8" height="14" rx="4" fill="#9d9a92"/>
+            <path d="M58 84 C64 72, 96 72, 102 84" fill="none" stroke="#9d9a92" stroke-width="5" stroke-linecap="round"/>
+            <path d="M64 92 L58 84 M96 92 L102 84" fill="none" stroke="#b3b0a9" stroke-width="3" stroke-linecap="round"/>
+          </svg>
+        </div>
+      `);
+    }
+
+    function micSvg(option) {
+      const enabled = option.value === 'yes';
+      const unsure = option.value === 'unsure';
+      return renderImageOrFallback(option, `
+        <div class="illustration">
+          <svg viewBox="0 0 160 100" class="mic-svg" aria-hidden="true">
+            <rect x="22" y="18" width="116" height="6" rx="3" fill="#d7d4cd"/>
+            <line x1="80" y1="24" x2="80" y2="48" stroke="#b6b3ab" stroke-width="2.5"/>
+            <circle cx="80" cy="56" r="12" fill="${enabled ? '#009DDF' : unsure ? '#f5c26b' : '#d7d4cd'}" opacity=".18"/>
+            <circle cx="80" cy="56" r="7" fill="${enabled ? '#009DDF' : unsure ? '#e39d23' : '#b8b4ad'}"/>
+            <rect x="58" y="68" width="44" height="6" rx="3" fill="#ece9e2"/>
+          </svg>
+        </div>
+      `);
+    }
+
+    function genericPlaceholder(option, title = 'Platzhalter') {
+      return renderImageOrFallback(option, `<div class="illustration"><div class="image-frame">${escapeHtml(title)}</div></div>`);
+    }
+
     function renderIllustration(stepKey, option) {
-      if (stepKey === "roomSize") {
-        const people = Array.from({ length: Math.min(option.people || 0, 8) }, () => '<span class="person"></span>').join("");
-        return `<div class="illustration room-illu"><div class="people">${people}</div></div>`;
-      }
-      if (stepKey === "display") {
-        const cls = option.value === "single" ? "single" : option.value === "dual" ? "dual" : "touch";
-        return `<div class="illustration display-illu ${cls}"><span></span></div>`;
-      }
-      if (stepKey === "doorSign") return '<div class="illustration door-illu"></div>';
-      if (stepKey === "mounting") return `<div class="illustration mount-illu ${option.value === "wall" ? "wall" : "free"}"></div>`;
-      if (stepKey === "ceilingMic") return '<div class="illustration ceiling-illu"></div>';
-      if (stepKey === "roomConditions") return '<div class="illustration grid-note">Raumfaktoren auswählen</div>';
-      return '<div class="illustration"></div>';
+      if (stepKey === 'roomSize') return roomSceneSvg(option.value, option);
+      if (stepKey === 'display') return displaySceneSvg(option.value, option);
+      if (stepKey === 'doorSign') return doorSignSvg(option);
+      if (stepKey === 'mounting') return mountSvg(option.value, option);
+      if (stepKey === 'ceilingMic') return micSvg(option);
+      if (stepKey === 'requirements') return genericPlaceholder(option, 'Feature');
+      if (stepKey === 'roomConditions') return genericPlaceholder(option, 'Raumfaktor');
+      if (stepKey === 'manufacturer') return genericPlaceholder(option, 'Hersteller');
+      return genericPlaceholder(option);
     }
 
     function renderCards(step) {
       const currentValue = state.answers[step.key];
-      const colsClass = step.options.length === 2 ? "cols-2" : step.options.length >= 4 ? "cols-4" : "";
-      const helper = typeof step.helper === "function" ? step.helper() : "";
+      const colsClass = step.options.length === 2 ? 'cols-2' : step.options.length >= 4 ? 'cols-4' : '';
+      const helper = typeof step.helper === 'function' ? step.helper() : '';
 
       const cards = step.options.map((option) => {
-        const disabled = typeof option.disabled === "function" ? option.disabled() : false;
-        const selected = step.type === "multi"
+        const disabled = typeof option.disabled === 'function' ? option.disabled() : false;
+        const selected = step.type === 'multi'
           ? currentValue.includes(option.value)
           : currentValue === option.value;
 
         return `
-          <button type="button" class="card ${selected ? "selected" : ""} ${disabled ? "disabled" : ""}" data-value="${option.value}" ${disabled ? "disabled" : ""}>
+          <button type="button" class="card ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''}" data-value="${option.value}" ${disabled ? 'disabled' : ''}>
             <div class="meta">
               <div>
                 <div class="card-title">${escapeHtml(option.title)}</div>
                 <p class="card-desc">${escapeHtml(option.desc)}</p>
               </div>
-              <span class="mini-label">${escapeHtml(option.tag || "Option")}</span>
+              <span class="mini-label">${escapeHtml(option.tag || 'Option')}</span>
             </div>
             ${renderIllustration(step.key, option)}
           </button>
         `;
-      }).join("");
+      }).join('');
 
       return `
-        ${helper ? `<p class="helper">${escapeHtml(helper)}</p>` : ""}
+        ${helper ? `<p class="helper">${escapeHtml(helper)}</p>` : ''}
         <div class="cards ${colsClass}">${cards}</div>
       `;
     }
 
     function listLabels(key, values) {
-      if (!Array.isArray(values) || !values.length) return "Keine Auswahl";
-      return `<ul>${values.map((item) => `<li>${escapeHtml(optionLabelMap[key][item] || item)}</li>`).join("")}</ul>`;
+      if (!Array.isArray(values) || !values.length) return '<p>Keine Auswahl</p>';
+      return `<ul>${values.map((item) => `<li>${escapeHtml(optionLabelMap[key][item] || item)}</li>`).join('')}</ul>`;
     }
 
     function getPayload() {
@@ -893,11 +1043,12 @@
         roomSize: state.answers.roomSize,
         budget: state.answers.budget,
         display: state.answers.display,
-        doorSign: state.answers.doorSign === "yes",
+        doorSign: state.answers.doorSign === 'yes',
         mounting: state.answers.mounting,
         ceilingMic: state.answers.ceilingMic,
         requirements: state.answers.requirements,
         roomConditions: state.answers.roomConditions,
+        manufacturer: state.answers.manufacturer,
         contact: {
           name: state.answers.contact.name,
           company: state.answers.contact.company,
@@ -919,14 +1070,16 @@
       const payload = getPayload();
       return `
         <div class="summary-grid">
-          <div class="summary-card"><h4>Raumgröße</h4><p>${escapeHtml(optionLabelMap.roomSize[state.answers.roomSize] || "-")}</p></div>
-          <div class="summary-card"><h4>Budget</h4><p>${escapeHtml(optionLabelMap.budget[state.answers.budget] || "-")}</p></div>
-          <div class="summary-card"><h4>Display</h4><p>${escapeHtml(optionLabelMap.display[state.answers.display] || "-")}</p></div>
-          <div class="summary-card"><h4>Türschild</h4><p>${escapeHtml(optionLabelMap.doorSign[state.answers.doorSign] || "-")}</p></div>
-          <div class="summary-card"><h4>Montage</h4><p>${escapeHtml(optionLabelMap.mounting[state.answers.mounting] || "-")}</p></div>
-          <div class="summary-card"><h4>Deckenmikrofon</h4><p>${escapeHtml(optionLabelMap.ceilingMic[state.answers.ceilingMic] || "-")}</p></div>
-          <div class="summary-card"><h4>Funktionen</h4>${listLabels("requirements", state.answers.requirements)}</div>
-          <div class="summary-card"><h4>Raumgegebenheiten</h4>${listLabels("roomConditions", state.answers.roomConditions)}</div>
+          <div class="summary-card"><h4>Raumgröße</h4><p>${escapeHtml(optionLabelMap.roomSize[state.answers.roomSize] || '-')}</p></div>
+          <div class="summary-card"><h4>Budget</h4><p>${escapeHtml(optionLabelMap.budget[state.answers.budget] || '-')}</p></div>
+          <div class="summary-card"><h4>Display</h4><p>${escapeHtml(optionLabelMap.display[state.answers.display] || '-')}</p></div>
+          <div class="summary-card"><h4>Türschild</h4><p>${escapeHtml(optionLabelMap.doorSign[state.answers.doorSign] || '-')}</p></div>
+          <div class="summary-card"><h4>Montage</h4><p>${escapeHtml(optionLabelMap.mounting[state.answers.mounting] || '-')}</p></div>
+          <div class="summary-card"><h4>Deckenmikrofon</h4><p>${escapeHtml(optionLabelMap.ceilingMic[state.answers.ceilingMic] || '-')}</p></div>
+          <div class="summary-card"><h4>Funktionen</h4>${listLabels('requirements', state.answers.requirements)}</div>
+          <div class="summary-card"><h4>Raumgegebenheiten</h4>${listLabels('roomConditions', state.answers.roomConditions)}</div>
+          <div class="summary-card"><h4>MTR-Hersteller</h4><p>${escapeHtml(optionLabelMap.manufacturer[state.answers.manufacturer] || '-')}</p></div>
+          <div class="summary-card"><h4>Hinweis</h4><p>Der JSON-Block ist nur für Demo / Debug und aktualisiert sich jetzt live mit den Formulardaten.</p></div>
         </div>
 
         <div class="summary-card" style="margin-bottom:10px;">
@@ -954,7 +1107,7 @@
             </div>
             <div class="field full">
               <label class="check">
-                <input id="privacy" type="checkbox" ${state.answers.contact.privacy ? "checked" : ""} />
+                <input id="privacy" type="checkbox" ${state.answers.contact.privacy ? 'checked' : ''} />
                 <span>Ich stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu. <span class="required">*</span></span>
               </label>
             </div>
@@ -962,11 +1115,19 @@
         </div>
 
         <div class="summary-card">
-          <h4>JSON Payload</h4>
-          <pre class="json-preview">${escapeHtml(JSON.stringify(payload, null, 2))}</pre>
+          <h4>Debug / Demo</h4>
+          <details class="debug">
+            <summary><span>JSON Payload anzeigen</span><span>nur intern</span></summary>
+            <pre class="json-preview" id="jsonPreview">${escapeHtml(JSON.stringify(payload, null, 2))}</pre>
+          </details>
           <div class="success" id="successBox">Vielen Dank. Die Demo hat den Payload erfolgreich an den vorbereiteten API-Layer übergeben.</div>
         </div>
       `;
+    }
+
+    function updateJsonPreview() {
+      const pre = document.getElementById('jsonPreview');
+      if (pre) pre.textContent = JSON.stringify(getPayload(), null, 2);
     }
 
     function bindCardEvents(step) {
@@ -975,8 +1136,14 @@
           const { value } = card.dataset;
           if (step.type === 'single') {
             state.answers[step.key] = value;
-            if (step.key === 'roomSize' && value === 'huddle' && state.answers.display === 'dual') {
-              state.answers.display = '';
+            updateDependencies(step.key, value);
+
+            if (step.key === 'roomSize' && value === 'individual') {
+              const target = summaryIndex();
+              state.currentStep = target;
+              markVisited(target);
+              render();
+              return;
             }
           } else {
             const list = state.answers[step.key];
@@ -984,6 +1151,7 @@
             if (index > -1) list.splice(index, 1);
             else list.push(value);
           }
+          markVisited(state.currentStep);
           render();
         });
       });
@@ -992,14 +1160,16 @@
     function bindSummaryInputs() {
       ["name", "company", "email", "phone", "message"].forEach((id) => {
         const input = document.getElementById(id);
-        input.addEventListener("input", (e) => {
+        input?.addEventListener('input', (e) => {
           state.answers.contact[id] = e.target.value;
+          updateJsonPreview();
           els.nextBtn.disabled = !canContinue();
         });
       });
 
-      document.getElementById("privacy")?.addEventListener("change", (e) => {
+      document.getElementById('privacy')?.addEventListener('change', (e) => {
         state.answers.contact.privacy = e.target.checked;
+        updateJsonPreview();
         els.nextBtn.disabled = !canContinue();
       });
     }
@@ -1016,6 +1186,8 @@
       const note = typeof step.note === 'function' ? step.note() : '';
       els.noticeBox.style.display = note ? 'block' : 'none';
       els.noticeBox.textContent = note;
+
+      renderStepNav();
 
       if (step.type === 'summary') {
         els.content.innerHTML = renderSummary();
@@ -1038,6 +1210,7 @@
     els.backBtn.addEventListener('click', () => {
       if (state.currentStep > 0) {
         state.currentStep -= 1;
+        markVisited(state.currentStep);
         render();
       }
     });
@@ -1045,9 +1218,11 @@
     els.nextBtn.addEventListener('click', async () => {
       if (!canContinue()) return;
 
-      const isSummary = steps[state.currentStep].type === 'summary';
+      const current = steps[state.currentStep];
+      const isSummary = current.type === 'summary';
       if (!isSummary) {
         state.currentStep += 1;
+        markVisited(state.currentStep);
         render();
         return;
       }
