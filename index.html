@@ -8,500 +8,121 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --brand: #009DDF;
-      --brand-dark: #087db0;
-      --bg: #f5f4f1;
-      --surface: #ffffff;
-      --text: #131313;
-      --muted: #666662;
-      --muted-soft: #898985;
-      --line: #e6e4de;
-      --line-strong: #d7d4cd;
-      --success: #1e7e34;
-      --warning: #9a5f08;
-      --danger: #b3261e;
-      --radius: 16px;
-      --radius-lg: 20px;
-      --max: 980px;
-      --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --shadow-soft: 0 12px 28px rgba(20,20,20,.05);
-      --shadow-card: 0 14px 32px rgba(20,20,20,.06);
+      --brand:#009DDF;
+      --brand-weak:rgba(0,157,223,.12);
+      --bg:#f5f4f1;
+      --surface:#fff;
+      --text:#131313;
+      --muted:#666662;
+      --line:#e6e4de;
+      --line-strong:#d7d4cd;
+      --ok:#1e7e34;
+      --warn:#9a5f08;
+      --radius:16px;
+      --radius-lg:20px;
+      --shadow:0 12px 28px rgba(20,20,20,.05);
+      --shadow-card:0 14px 32px rgba(20,20,20,.06);
+      --ease:cubic-bezier(.25,.46,.45,.94);
+      --max:1020px;
     }
-
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Sora', system-ui, sans-serif;
-      min-height: 100vh;
-      padding: 30px 16px 44px;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{
+      background:var(--bg); color:var(--text); font-family:'Sora',system-ui,sans-serif;
+      min-height:100vh; padding:28px 16px 40px; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
     }
+    button,input,textarea{font:inherit}
+    .app{max-width:var(--max);margin:0 auto}
 
-    button, input, textarea, select { font: inherit; }
-    .app { max-width: var(--max); margin: 0 auto; }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
+    .logo{width:52px;height:52px;border:1px solid var(--line);border-radius:14px;background:#fff;display:grid;place-items:center;overflow:hidden;flex:0 0 auto}
+    .logo img{width:74%;height:74%;object-fit:contain;display:block}
+    .brand h1{margin:0;font-size:1rem;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+    .step-counter{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 18px;
+    .progress-shell{width:100%;height:9px;border-radius:999px;background:#fff;border:1px solid var(--line);overflow:hidden;margin-bottom:12px}
+    .progress-bar{width:0;height:100%;background:linear-gradient(90deg,var(--brand),#2bb9ef);transition:width .4s var(--ease)}
+
+    .step-nav{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px;padding:0}
+    .step-chip{
+      appearance:none;border:1px solid var(--line);background:#fff;color:var(--muted);padding:9px 13px;border-radius:999px;
+      font-size:.82rem;cursor:pointer;transition:.18s ease
     }
+    .step-chip.current{background:#111;color:#fff;border-color:#111;box-shadow:var(--shadow)}
+    .step-chip.done{color:#087db0;border-color:rgba(0,157,223,.35);background:linear-gradient(180deg,#fff,#f7fcff)}
+    .step-chip.locked{opacity:.48;cursor:not-allowed}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
+    .hero{margin-bottom:18px}
+    .title{margin:0 0 10px;font-size:clamp(1.65rem,4vw,2.35rem);line-height:1.08;letter-spacing:-.03em;font-weight:600;max-width:34ch}
+    .subtitle{margin:0;max-width:70ch;font-size:1rem;line-height:1.68;color:#4f4f4c}
+    .notice{display:none;margin-top:14px;padding:14px 16px;border-radius:12px;border:1px solid #f0ddbe;background:#fff7eb;color:var(--warn);font-size:.92rem;line-height:1.55}
+
+    .content{animation:fadeIn .24s var(--ease)}
+    .helper{margin:0 0 12px;color:var(--muted);font-size:.92rem;line-height:1.55}
+
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .cards.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .cards.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+    .card{
+      appearance:none;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);text-align:left;
+      padding:18px;min-height:212px;display:flex;flex-direction:column;gap:14px;cursor:pointer;
+      transition:transform .22s var(--ease),border-color .22s var(--ease),box-shadow .22s var(--ease),background .22s var(--ease);
+      overflow:hidden
     }
+    .card:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:var(--shadow)}
+    .card.selected{border-color:rgba(0,157,223,.35);background:linear-gradient(180deg,#fff,#f9fdff);box-shadow:0 0 0 2px rgba(0,157,223,.08),var(--shadow-card)}
+    .card.disabled{opacity:.48;filter:grayscale(.04);cursor:not-allowed;transform:none !important;box-shadow:none}
+    .meta{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .meta > div{min-width:0}
+    .card-title{margin:0 0 6px;font-size:1rem;font-weight:600;letter-spacing:-.02em;line-height:1.28;overflow-wrap:anywhere}
+    .card-desc{margin:0;font-size:.9rem;line-height:1.58;color:#565652;overflow-wrap:anywhere}
+    .mini-label{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;max-width:44%;padding:6px 9px;border-radius:999px;border:1px solid #ece9e2;background:#f6f5f1;color:#88857e;font-size:11px;letter-spacing:.08em;text-transform:uppercase;overflow-wrap:anywhere;text-align:center}
 
-    .logo-wrap {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
-      background: #fff;
-      border: 1px solid var(--line);
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      flex: 0 0 auto;
-    }
+    .illu{height:104px;border-radius:14px;background:linear-gradient(180deg,#fafaf7,#f4f3ef);border:1px solid #efede7;position:relative;overflow:hidden}
+    .illu img{width:100%;height:100%;object-fit:cover;display:block}
+    .placeholder{width:100%;height:100%;display:grid;place-items:center;color:#9b9890;font-size:.76rem;letter-spacing:.03em;text-transform:uppercase;background:repeating-linear-gradient(135deg,#f6f5f1 0,#f6f5f1 8px,#f2f1ed 8px,#f2f1ed 16px)}
+    .illu svg{width:100%;height:100%;display:block}
 
-    .logo-wrap img {
-      width: 74%;
-      height: 74%;
-      object-fit: contain;
-      display: block;
-    }
+    .summary-grid,.form-grid{display:grid;gap:10px}
+    .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:10px}
+    .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .summary-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px}
+    .summary-card h4{margin:0 0 8px;font-size:.92rem;font-weight:500;color:var(--muted)}
+    .summary-card p,.summary-card ul{margin:0;padding-left:0;list-style-position:inside;line-height:1.6;color:var(--text)}
 
-    .brand h1 {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-    }
+    .field{display:grid;gap:8px}.field.full{grid-column:1 / -1} label{font-size:.9rem;color:#2f2f2c}.required{color:#cf2f2f}
+    input,textarea{width:100%;min-height:48px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--text);outline:none;transition:border-color .18s ease, box-shadow .18s ease}
+    textarea{min-height:110px;resize:vertical}
+    input:focus,textarea:focus{border-color:rgba(0,157,223,.4);box-shadow:0 0 0 3px rgba(0,157,223,.10)}
 
-    .step-counter {
-      font-size: 11px;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      color: var(--muted);
-      white-space: nowrap;
-    }
+    .check{display:flex;gap:10px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid var(--line);background:#fff}
+    .check input{width:18px;min-height:18px;margin-top:2px;box-shadow:none}
 
-    .progress-shell {
-      width: 100%;
-      height: 9px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid var(--line);
-      overflow: hidden;
-      margin-bottom: 14px;
-    }
+    details.debug{margin-top:10px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+    details.debug summary{cursor:pointer;padding:14px 16px;color:var(--muted);font-size:.9rem;list-style:none;display:flex;justify-content:space-between;align-items:center}
+    details.debug summary::-webkit-details-marker{display:none}
+    .json-preview{background:#111;color:#e8f6fb;margin:0;padding:16px;overflow:auto;font-size:.86rem;line-height:1.55}
 
-    .progress-bar {
-      width: 0;
-      height: 100%;
-      background: linear-gradient(90deg, var(--brand), #27b5ef);
-      border-radius: inherit;
-      transition: width .45s var(--ease);
-    }
+    .actions{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
+    .status{font-size:.9rem;line-height:1.5;color:var(--muted)}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap}.btn{appearance:none;border:none;min-height:44px;padding:0 18px;border-radius:999px;font-size:.92rem;font-weight:500;cursor:pointer;transition:transform .2s var(--ease),opacity .2s var(--ease),background .2s var(--ease),color .2s var(--ease)}
+    .btn:hover{transform:translateY(-1px)} .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+    .btn-secondary{background:#fff;color:#222;border:1px solid var(--line)} .btn-primary{background:#111;color:#fff}.btn-primary:hover{background:#222}
+    .success{display:none;margin-top:8px;padding:13px 14px;border-radius:12px;background:#edf8ef;border:1px solid #d7ecd9;color:var(--ok);font-size:.92rem}
 
-    .step-nav-wrap {
-      margin-bottom: 26px;
-    }
-
-    .step-nav {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 2px 2px 6px;
-      scrollbar-width: thin;
-    }
-
-    .step-nav::-webkit-scrollbar { height: 8px; }
-    .step-nav::-webkit-scrollbar-thumb { background: #d9d6cf; border-radius: 999px; }
-
-    .step-chip {
-      appearance: none;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: .84rem;
-      white-space: nowrap;
-      cursor: pointer;
-      transition: .2s ease;
-      flex: 0 0 auto;
-    }
-
-    .step-chip.current {
-      background: #111;
-      color: #fff;
-      border-color: #111;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .step-chip.done {
-      border-color: rgba(0,157,223,.35);
-      color: var(--brand-dark);
-      background: linear-gradient(180deg, #fff, #f7fcff);
-    }
-
-    .step-chip.locked {
-      opacity: .48;
-      cursor: not-allowed;
-    }
-
-    .hero {
-      margin-bottom: 20px;
-    }
-
-    .title {
-      margin: 0 0 10px;
-      font-size: clamp(1.6rem, 4vw, 2.35rem);
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      font-weight: 600;
-      max-width: 18ch;
-      color: var(--text);
-    }
-
-    .subtitle {
-      margin: 0;
-      max-width: 58ch;
-      font-size: 1rem;
-      line-height: 1.68;
-      color: #4f4f4c;
-    }
-
-    .notice {
-      display: none;
-      margin-top: 14px;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid #f0ddbe;
-      background: #fff7eb;
-      color: var(--warning);
-      font-size: .92rem;
-      line-height: 1.55;
-    }
-
-    .content {
-      animation: fadeIn .28s var(--ease);
-    }
-
-    .helper {
-      margin: 0 0 12px;
-      color: var(--muted);
-      font-size: .92rem;
-      line-height: 1.55;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .cards.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .cards.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-
-    .card {
-      appearance: none;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      color: inherit;
-      text-align: left;
-      padding: 18px;
-      min-height: 210px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      cursor: pointer;
-      transition: transform .24s var(--ease), border-color .24s var(--ease), box-shadow .24s var(--ease), background .24s var(--ease);
-      overflow: hidden;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
-      border-color: var(--line-strong);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .card.selected {
-      border-color: rgba(0,157,223,.35);
-      background: linear-gradient(180deg, #ffffff, #f9fdff);
-      box-shadow: 0 0 0 2px rgba(0,157,223,.08), var(--shadow-card);
-    }
-
-    .card.disabled {
-      opacity: .48;
-      filter: grayscale(.06);
-      cursor: not-allowed;
-      transform: none !important;
-      box-shadow: none;
-    }
-
-    .meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .meta > div { min-width: 0; }
-
-    .card-title {
-      margin: 0 0 6px;
-      font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      line-height: 1.25;
-      color: var(--text);
-      overflow-wrap: anywhere;
-    }
-
-    .card-desc {
-      margin: 0;
-      font-size: .9rem;
-      line-height: 1.58;
-      color: #565652;
-      overflow-wrap: anywhere;
-    }
-
-    .mini-label {
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted-soft);
-      background: #f6f5f1;
-      border: 1px solid #ece9e2;
-      border-radius: 999px;
-      padding: 6px 9px;
-      max-width: 42%;
-      text-align: center;
-      justify-content: center;
-      overflow-wrap: anywhere;
-    }
-
-    .illustration {
-      height: 104px;
-      border-radius: 14px;
-      background: linear-gradient(180deg, #fafaf7, #f4f3ef);
-      border: 1px solid #efede7;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .image-frame {
-      width: 100%;
-      height: 100%;
-      display: grid;
-      place-items: center;
-      color: #9b9890;
-      font-size: .76rem;
-      letter-spacing: .03em;
-      text-transform: uppercase;
-      background: repeating-linear-gradient(135deg, #f6f5f1 0px, #f6f5f1 8px, #f2f1ed 8px, #f2f1ed 16px);
-    }
-
-    .room-svg,
-    .display-svg,
-    .mount-svg,
-    .door-svg,
-    .mic-svg {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-
-    .summary-grid,
-    .form-grid {
-      display: grid;
-      gap: 10px;
-    }
-
-    .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-bottom: 10px; }
-    .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-    .summary-card {
-      background: #fff;
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      padding: 18px;
-    }
-
-    .summary-card h4 {
-      margin: 0 0 8px;
-      font-size: .92rem;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .summary-card p,
-    .summary-card ul {
-      margin: 0;
-      padding-left: 0;
-      list-style-position: inside;
-      line-height: 1.6;
-      color: var(--text);
-    }
-
-    .field { display: grid; gap: 8px; }
-    .field.full { grid-column: 1 / -1; }
-    label { font-size: .9rem; color: #2f2f2c; }
-    .required { color: #cf2f2f; }
-
-    input, textarea, select {
-      width: 100%;
-      min-height: 48px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #fff;
-      color: var(--text);
-      outline: none;
-      transition: border-color .18s ease, box-shadow .18s ease;
-    }
-
-    textarea { min-height: 110px; resize: vertical; }
-    input:focus, textarea:focus, select:focus {
-      border-color: rgba(0,157,223,.4);
-      box-shadow: 0 0 0 3px rgba(0,157,223,.10);
-    }
-
-    .check {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid var(--line);
-      background: #fff;
-    }
-
-    .check input {
-      width: 18px;
-      min-height: 18px;
-      margin-top: 2px;
-      box-shadow: none;
-    }
-
-    details.debug {
-      margin-top: 10px;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      overflow: hidden;
-      background: #fff;
-    }
-
-    details.debug summary {
-      cursor: pointer;
-      padding: 14px 16px;
-      color: var(--muted);
-      font-size: .9rem;
-      list-style: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    details.debug summary::-webkit-details-marker { display: none; }
-
-    .json-preview {
-      background: #111;
-      color: #e8f6fb;
-      margin: 0;
-      border-radius: 0;
-      padding: 16px;
-      overflow: auto;
-      font-size: .86rem;
-      line-height: 1.55;
-    }
-
-    .actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 16px;
-      margin-top: 28px;
-      padding-top: 18px;
-      border-top: 1px solid var(--line);
-    }
-
-    .status {
-      font-size: .9rem;
-      line-height: 1.5;
-      color: var(--muted);
-    }
-
-    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
-
-    .btn {
-      appearance: none;
-      border: none;
-      min-height: 44px;
-      padding: 0 18px;
-      border-radius: 999px;
-      font-size: .92rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: transform .2s var(--ease), opacity .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
-    }
-
-    .btn:hover { transform: translateY(-1px); }
-    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
-    .btn-secondary { background: #fff; color: #222; border: 1px solid var(--line); }
-    .btn-primary { background: #111; color: #fff; }
-    .btn-primary:hover { background: #222; }
-
-    .success {
-      display: none;
-      margin-top: 8px;
-      padding: 13px 14px;
-      border-radius: 12px;
-      background: #edf8ef;
-      border: 1px solid #d7ecd9;
-      color: var(--success);
-      font-size: .92rem;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 860px) {
-      .cards.cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .summary-grid, .form-grid { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 680px) {
-      body { padding: 20px 14px 36px; }
-      .topbar { flex-direction: column; align-items: flex-start; }
-      .cards, .cards.cols-2, .cards.cols-4 { grid-template-columns: 1fr; }
-      .actions { flex-direction: column; align-items: stretch; }
-      .btn-row, .btn { width: 100%; }
-      .title { max-width: 14ch; }
-      .step-chip { font-size: .8rem; }
-    }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    @media (max-width: 920px){.cards.cols-4{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media (max-width: 860px){.summary-grid,.form-grid{grid-template-columns:1fr}}
+    @media (max-width: 740px){.cards,.cards.cols-2,.cards.cols-4{grid-template-columns:1fr}.actions{flex-direction:column;align-items:stretch}.btn-row,.btn{width:100%}.topbar{flex-direction:column;align-items:flex-start}.title{max-width:none}}
   </style>
 </head>
 <body>
   <div class="app">
     <header class="topbar">
       <div class="brand">
-        <div class="logo-wrap">
+        <div class="logo">
           <img src="cotive-08.png" alt="Firmenlogo" onerror="this.src='cotive-07.png';this.onerror=function(){this.style.display='none';};">
         </div>
         <h1>Meetingraum-Konfigurator</h1>
@@ -510,10 +131,7 @@
     </header>
 
     <div class="progress-shell"><div class="progress-bar" id="progressBar"></div></div>
-
-    <div class="step-nav-wrap">
-      <nav class="step-nav" id="stepNav" aria-label="Schrittübersicht"></nav>
-    </div>
+    <nav class="step-nav" id="stepNav" aria-label="Schrittübersicht"></nav>
 
     <section class="hero">
       <h2 class="title" id="stepTitle">Wie viele Personen nutzen den Raum typischerweise?</h2>
@@ -539,480 +157,289 @@
       currentStep: 0,
       maxVisitedStep: 0,
       answers: {
-        roomSize: "",
-        budget: "",
-        display: "",
-        doorSign: "",
-        mounting: "",
-        ceilingMic: "",
-        requirements: [],
-        roomConditions: [],
-        manufacturer: "",
-        contact: {
-          name: "",
-          company: "",
-          email: "",
-          phone: "",
-          message: "",
-          privacy: false
-        }
+        roomSize: '', budget: '', display: '', doorSign: '', mounting: '', ceilingMic: '',
+        requirements: [], roomConditions: [], manufacturer: '',
+        contact: { name: '', company: '', email: '', phone: '', message: '', privacy: false }
       }
     };
 
     const optionLabelMap = {
-      roomSize: {
-        huddle: "Huddle (1–4 Personen)",
-        medium: "Medium (5–8 Personen)",
-        large: "Large (9–16 Personen)",
-        individual: "Individual (17+ Personen)"
-      },
-      budget: {
-        under_5000: "Unter 5.000 €",
-        between_5000_15000: "5.000 € – 15.000 €",
-        over_15000: "Über 15.000 €"
-      },
-      display: {
-        single: "Single Display",
-        dual: "Dual Display",
-        touch: "Touch Display"
-      },
-      doorSign: { yes: "Ja", no: "Nein" },
-      mounting: { wall: "Wandmontage", free: "Freistehend" },
-      ceilingMic: { yes: "Ja", no: "Nein", unsure: "Nicht sicher" },
+      roomSize: { huddle:'Huddle (1–4 Personen)', medium:'Medium (5–8 Personen)', large:'Large (9–16 Personen)', individual:'Individual (17+ Personen)' },
+      budget: { under_5000:'Unter 5.000 €', between_5000_15000:'5.000 € – 15.000 €', over_15000:'Über 15.000 €' },
+      display: { single:'Single Display', dual:'Dual Display', touch:'Touch Display' },
+      doorSign: { yes:'Ja', no:'Nein' },
+      mounting: { wall:'Wandmontage', free:'Freistehend' },
+      ceilingMic: { yes:'Ja', no:'Nein', unsure:'Nicht sicher' },
       requirements: {
-        wide_angle: "Weitwinkelkamera",
-        ptz: "PTZ Kamera",
-        speaker_tracking: "Speaker Tracking",
-        auto_framing: "Auto Framing",
-        byod: "BYOD Nutzung",
-        content_sharing: "Content Sharing"
+        wide_angle:'Weitwinkelkamera', ptz:'PTZ Kamera', speaker_tracking:'Speaker Tracking', auto_framing:'Auto Framing', byod:'BYOD Nutzung', content_sharing:'Content Sharing'
       },
       roomConditions: {
-        glass: "Viel Glas",
-        poor_acoustics: "Schlechte Akustik",
-        acoustic_panels: "Akustikpaneele vorhanden",
-        acoustic_measurement: "Raumakustik-Messung gewünscht",
-        high_ceilings: "Hohe Decken",
-        sunlight: "Starke Sonneneinstrahlung"
+        glass:'Viel Glas', poor_acoustics:'Schlechte Akustik', acoustic_panels:'Akustikpaneele vorhanden', acoustic_measurement:'Raumakustik-Messung gewünscht', high_ceilings:'Hohe Decken', sunlight:'Starke Sonneneinstrahlung'
       },
       manufacturer: {
-        lenovo: "Lenovo",
-        yealink: "Yealink",
-        crestron: "Crestron",
-        logitech: "Logitech",
-        poly: "Poly",
-        neat: "Neat",
-        no_preference: "Egal / Beratung erwünscht"
+        lenovo:'Lenovo', yealink:'Yealink', crestron:'Crestron', logitech:'Logitech', poly:'Poly', neat:'Neat', no_preference:'Egal / Beratung erwünscht'
       }
     };
 
     const steps = [
       {
-        key: "roomSize",
-        navLabel: "Raumgröße",
-        title: "Wie viele Personen nutzen den Raum typischerweise?",
-        subtitle: "Wählen Sie die passende Raumgröße. Die nächsten Schritte passen sich daran an.",
-        type: "single",
-        note: () => state.answers.roomSize === "individual"
-          ? "Für Räume ab 17 Personen springen wir direkt zur Anfrage, damit wir die Lösung individuell planen können."
-          : "",
-        options: [
-          { value: "huddle", title: "Huddle", desc: "1–4 Personen", tag: "Klein", people: 4 },
-          { value: "medium", title: "Medium", desc: "5–8 Personen", tag: "Standard", people: 6 },
-          { value: "large", title: "Large", desc: "9–16 Personen", tag: "Groß", people: 12 },
-          { value: "individual", title: "Individual", desc: "17+ Personen", tag: "Beratung", people: 18 }
+        key:'roomSize', navLabel:'Raumgröße', type:'single',
+        title:'Wie viele Personen nutzen den Raum typischerweise?',
+        subtitle:'Wählen Sie die passende Raumgröße. Die nächsten Schritte passen sich daran an.',
+        note: () => state.answers.roomSize === 'individual' ? 'Für Räume ab 17 Personen springen wir direkt zur Anfrage, damit wir die Lösung individuell planen können.' : '',
+        options:[
+          { value:'huddle', title:'Huddle', desc:'1–4 Personen', tag:'Klein' },
+          { value:'medium', title:'Medium', desc:'5–8 Personen', tag:'Standard' },
+          { value:'large', title:'Large', desc:'9–16 Personen', tag:'Groß' },
+          { value:'individual', title:'Individual', desc:'17+ Personen', tag:'Beratung' }
         ]
       },
       {
-        key: "budget",
-        navLabel: "Budget",
-        title: "Welches Budget ist geplant?",
-        subtitle: "Die Budgetspanne hilft bei der Einordnung der passenden Lösung.",
-        type: "single",
-        helper: () => ["large", "individual"].includes(state.answers.roomSize)
-          ? "Für große bzw. individuell geplante Räume ist ein Budget unter 5.000 € deaktiviert."
-          : "",
-        options: [
-          { value: "under_5000", title: "Unter 5.000 €", desc: "Einstiegslösung", tag: "Budget", disabled: () => ["large", "individual"].includes(state.answers.roomSize) },
-          { value: "between_5000_15000", title: "5.000 € – 15.000 €", desc: "Standardlösung", tag: "Standard" },
-          { value: "over_15000", title: "Über 15.000 €", desc: "Premium-Setup", tag: "Premium" }
+        key:'budget', navLabel:'Budget', type:'single',
+        title:'Welches Budget ist geplant?',
+        subtitle:'Die Budgetspanne hilft bei der Einordnung der passenden Lösung.',
+        helper: () => ['large','individual'].includes(state.answers.roomSize) ? 'Für große bzw. individuell geplante Räume ist ein Budget unter 5.000 € deaktiviert.' : '',
+        options:[
+          { value:'under_5000', title:'Unter 5.000 €', desc:'Einstiegslösung', tag:'Budget', disabled:() => ['large','individual'].includes(state.answers.roomSize) },
+          { value:'between_5000_15000', title:'5.000 € – 15.000 €', desc:'Standardlösung', tag:'Standard' },
+          { value:'over_15000', title:'Über 15.000 €', desc:'Premium-Setup', tag:'Premium' }
         ]
       },
       {
-        key: "display",
-        navLabel: "Display",
-        title: "Welche Display-Lösung wird benötigt?",
-        subtitle: "Die Displaywahl beeinflusst Zusammenarbeit, Platzbedarf und Montage.",
-        type: "single",
-        helper: () => state.answers.roomSize === "huddle" ? "Dual Display ist für Huddle-Räume deaktiviert." : "",
-        options: [
-          { value: "single", title: "Single Display", desc: "Ein zentrales Display", tag: "Klassisch" },
-          { value: "dual", title: "Dual Display", desc: "Zwei nebeneinander montierte Displays", tag: "Erweitert", disabled: () => state.answers.roomSize === "huddle" },
-          { value: "touch", title: "Touch Display", desc: "Interaktives Display für Kollaboration", tag: "Interaktiv" }
+        key:'display', navLabel:'Display', type:'single',
+        title:'Welche Display-Lösung wird benötigt?',
+        subtitle:'Die Displaywahl beeinflusst Zusammenarbeit, Platzbedarf und Montage.',
+        helper: () => state.answers.roomSize === 'huddle' ? 'Dual Display ist für Huddle-Räume deaktiviert.' : '',
+        options:[
+          { value:'single', title:'Single Display', desc:'Ein zentrales Display', tag:'Klassisch' },
+          { value:'dual', title:'Dual Display', desc:'Zwei nebeneinander montierte Displays', tag:'Erweitert', disabled:() => state.answers.roomSize === 'huddle' },
+          { value:'touch', title:'Touch Display', desc:'Interaktives Display für Kollaboration', tag:'Interaktiv' }
         ]
       },
       {
-        key: "doorSign",
-        navLabel: "Türschild",
-        title: "Soll ein digitales Türschild integriert werden?",
-        subtitle: "Optional für Raumstatus und Buchungsanzeige.",
-        type: "single",
-        options: [
-          { value: "yes", title: "Ja", desc: "Mit Belegungsanzeige", tag: "Optional" },
-          { value: "no", title: "Nein", desc: "Nicht erforderlich", tag: "Optional" }
+        key:'doorSign', navLabel:'Türschild', type:'single',
+        title:'Soll ein digitales Türschild integriert werden?',
+        subtitle:'Optional für Raumstatus und Buchungsanzeige.',
+        options:[
+          { value:'yes', title:'Ja', desc:'Mit Belegungsanzeige', tag:'Optional' },
+          { value:'no', title:'Nein', desc:'Nicht erforderlich', tag:'Optional' }
         ]
       },
       {
-        key: "mounting",
-        navLabel: "Montage",
-        title: "Welche Montageart ist möglich?",
-        subtitle: "Davon hängen Hardware und Installationsaufwand ab.",
-        type: "single",
-        options: [
-          { value: "wall", title: "Wandmontage", desc: "Fest installiert", tag: "Fix" },
-          { value: "free", title: "Freistehend", desc: "Auf Standfuß / Trolley", tag: "Flexibel" }
+        key:'mounting', navLabel:'Montage', type:'single',
+        title:'Welche Montageart ist möglich?',
+        subtitle:'Davon hängen Hardware und Installationsaufwand ab.',
+        options:[
+          { value:'wall', title:'Wandmontage', desc:'Fest installiert', tag:'Fix' },
+          { value:'free', title:'Freistehend', desc:'Auf Standfuß / Trolley', tag:'Flexibel' }
         ]
       },
       {
-        key: "ceilingMic",
-        navLabel: "Mikrofon",
-        title: "Kann ein Mikrofon an der Decke montiert werden?",
-        subtitle: "Wichtig für die Auswahl der Audiolösung.",
-        type: "single",
-        options: [
-          { value: "yes", title: "Ja", desc: "Deckenmontage ist möglich", tag: "Sicher" },
-          { value: "no", title: "Nein", desc: "Alternative Mikrofonierung", tag: "Eingeschränkt" },
-          { value: "unsure", title: "Nicht sicher", desc: "Wird später geklärt", tag: "Offen" }
+        key:'ceilingMic', navLabel:'Mikrofon', type:'single',
+        title:'Kann ein Mikrofon an der Decke montiert werden?',
+        subtitle:'Wichtig für die Auswahl der Audiolösung.',
+        options:[
+          { value:'yes', title:'Ja', desc:'Deckenmontage ist möglich', tag:'Sicher' },
+          { value:'no', title:'Nein', desc:'Alternative Mikrofonierung', tag:'Eingeschränkt' },
+          { value:'unsure', title:'Nicht sicher', desc:'Wird später geklärt', tag:'Offen' }
         ]
       },
       {
-        key: "requirements",
-        navLabel: "Funktionen",
-        title: "Welche Funktionen werden benötigt?",
-        subtitle: "Mehrfachauswahl möglich.",
-        type: "multi",
-        options: [
-          { value: "wide_angle", title: "Weitwinkelkamera", desc: "Mehr Raum im Bild", tag: "Kamera" },
-          { value: "ptz", title: "PTZ Kamera", desc: "Schwenken, neigen, zoomen", tag: "Kamera" },
-          { value: "speaker_tracking", title: "Speaker Tracking", desc: "Fokus auf Sprecher", tag: "AI" },
-          { value: "auto_framing", title: "Auto Framing", desc: "Automatische Bildanpassung", tag: "AI" },
-          { value: "byod", title: "BYOD Nutzung", desc: "Eigene Geräte nutzen", tag: "Flexibel" },
-          { value: "content_sharing", title: "Content Sharing", desc: "Einfache Inhaltsfreigabe", tag: "Collab" }
+        key:'requirements', navLabel:'Funktionen', type:'multi', optional:true,
+        title:'Welche Funktionen werden benötigt?',
+        subtitle:'Mehrfachauswahl möglich.',
+        options:[
+          { value:'wide_angle', title:'Weitwinkelkamera', desc:'Mehr Raum im Bild', tag:'Kamera' },
+          { value:'ptz', title:'PTZ Kamera', desc:'Schwenken, neigen, zoomen', tag:'Kamera' },
+          { value:'speaker_tracking', title:'Speaker Tracking', desc:'Fokus auf Sprecher', tag:'AI' },
+          { value:'auto_framing', title:'Auto Framing', desc:'Automatische Bildanpassung', tag:'AI' },
+          { value:'byod', title:'BYOD Nutzung', desc:'Eigene Geräte nutzen', tag:'Flexibel' },
+          { value:'content_sharing', title:'Content Sharing', desc:'Einfache Inhaltsfreigabe', tag:'Collab' }
         ]
       },
       {
-        key: "roomConditions",
-        navLabel: "Besonderheiten",
-        title: "Welche Besonderheiten hat der Raum?",
-        subtitle: "Mehrfachauswahl möglich.",
-        type: "multi",
-        options: [
-          { value: "glass", title: "Viel Glas", desc: "Reflexionen beachten", tag: "Licht" },
-          { value: "poor_acoustics", title: "Schlechte Akustik", desc: "Sprachverständlichkeit optimieren", tag: "Akustik" },
-          { value: "acoustic_panels", title: "Akustikpaneele vorhanden", desc: "Gute Voraussetzung", tag: "Akustik" },
-          { value: "acoustic_measurement", title: "Raumakustik-Messung gewünscht", desc: "Beratung erwünscht", tag: "Service" },
-          { value: "high_ceilings", title: "Hohe Decken", desc: "Wichtig für Montage", tag: "Baulich" },
-          { value: "sunlight", title: "Starke Sonneneinstrahlung", desc: "Display-Helligkeit beachten", tag: "Licht" }
+        key:'roomConditions', navLabel:'Besonderheiten', type:'multi', optional:true,
+        title:'Welche Besonderheiten hat der Raum?',
+        subtitle:'Mehrfachauswahl möglich.',
+        options:[
+          { value:'glass', title:'Viel Glas', desc:'Reflexionen beachten', tag:'Licht' },
+          { value:'poor_acoustics', title:'Schlechte Akustik', desc:'Sprachverständlichkeit optimieren', tag:'Akustik' },
+          { value:'acoustic_panels', title:'Akustikpaneele vorhanden', desc:'Gute Voraussetzung', tag:'Akustik' },
+          { value:'acoustic_measurement', title:'Raumakustik-Messung gewünscht', desc:'Beratung erwünscht', tag:'Service' },
+          { value:'high_ceilings', title:'Hohe Decken', desc:'Wichtig für Montage', tag:'Baulich' },
+          { value:'sunlight', title:'Starke Sonneneinstrahlung', desc:'Display-Helligkeit beachten', tag:'Licht' }
         ]
       },
       {
-        key: "manufacturer",
-        navLabel: "Hersteller",
-        title: "Welchen MTR-Hersteller bevorzugen Sie?",
-        subtitle: "Optional zur besseren Einordnung Ihrer bevorzugten Lösung.",
-        type: "single",
-        options: [
-          { value: "lenovo", title: "Lenovo", desc: "MTR-Systeme von Lenovo", tag: "MTR" },
-          { value: "yealink", title: "Yealink", desc: "MeetingBar und MVC Serien", tag: "MTR" },
-          { value: "crestron", title: "Crestron", desc: "Controller und Integrationslösungen", tag: "MTR" },
-          { value: "logitech", title: "Logitech", desc: "Rally, Tap und Roommate", tag: "MTR" },
-          { value: "poly", title: "Poly", desc: "Studio X und G Serie", tag: "MTR" },
-          { value: "neat", title: "Neat", desc: "Neat Board und Neat Bar", tag: "MTR" },
-          { value: "no_preference", title: "Egal / Beratung erwünscht", desc: "Noch keine Präferenz", tag: "Offen" }
+        key:'manufacturer', navLabel:'Hersteller', type:'single', optional:true,
+        title:'Welchen MTR-Hersteller bevorzugen Sie?',
+        subtitle:'Optional zur besseren Einordnung Ihrer bevorzugten Lösung.',
+        options:[
+          { value:'lenovo', title:'Lenovo', desc:'MTR-Systeme von Lenovo', tag:'MTR' },
+          { value:'yealink', title:'Yealink', desc:'MeetingBar und MVC Serien', tag:'MTR' },
+          { value:'crestron', title:'Crestron', desc:'Controller und Integrationslösungen', tag:'MTR' },
+          { value:'logitech', title:'Logitech', desc:'Rally, Tap und Roommate', tag:'MTR' },
+          { value:'poly', title:'Poly', desc:'Studio X und G Serie', tag:'MTR' },
+          { value:'neat', title:'Neat', desc:'Neat Board und Neat Bar', tag:'MTR' },
+          { value:'no_preference', title:'Egal / Beratung erwünscht', desc:'Noch keine Präferenz', tag:'Offen' }
         ]
       },
       {
-        key: SUMMARY_KEY,
-        navLabel: "Kontakt",
-        title: "Zusammenfassung Ihrer Konfiguration",
-        subtitle: "Prüfen Sie die Angaben und senden Sie anschließend die Anfrage ab.",
-        type: "summary"
+        key:SUMMARY_KEY, navLabel:'Kontakt', type:'summary',
+        title:'Zusammenfassung Ihrer Konfiguration',
+        subtitle:'Prüfen Sie die Angaben und senden Sie anschließend die Anfrage ab.'
       }
     ];
 
     const els = {
-      progressLabel: document.getElementById("progressLabel"),
-      progressBar: document.getElementById("progressBar"),
-      stepTitle: document.getElementById("stepTitle"),
-      stepSubtitle: document.getElementById("stepSubtitle"),
-      noticeBox: document.getElementById("noticeBox"),
-      content: document.getElementById("content"),
-      footerNote: document.getElementById("footerNote"),
-      nextBtn: document.getElementById("nextBtn"),
-      backBtn: document.getElementById("backBtn"),
-      stepNav: document.getElementById("stepNav")
+      progressLabel: document.getElementById('progressLabel'),
+      progressBar: document.getElementById('progressBar'),
+      stepNav: document.getElementById('stepNav'),
+      stepTitle: document.getElementById('stepTitle'),
+      stepSubtitle: document.getElementById('stepSubtitle'),
+      noticeBox: document.getElementById('noticeBox'),
+      content: document.getElementById('content'),
+      footerNote: document.getElementById('footerNote'),
+      nextBtn: document.getElementById('nextBtn'),
+      backBtn: document.getElementById('backBtn')
     };
 
-    function escapeHtml(value = "") {
+    function escapeHtml(value=''){
       return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", "&#039;");
+        .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+        .replaceAll('"','&quot;').replaceAll("'",'&#039;');
     }
 
-    function isStepComplete(step) {
-      if (step.type === "summary") return true;
+    function summaryIndex(){ return steps.findIndex(s => s.key === SUMMARY_KEY); }
+    function markVisited(i){ state.maxVisitedStep = Math.max(state.maxVisitedStep, i); }
+
+    function isStepComplete(step){
+      if(step.type === 'summary') return true;
+      if(step.optional) return true;
       const value = state.answers[step.key];
-      if (step.type === "multi") return Array.isArray(value) && value.length > 0;
-      return value !== "";
+      if(step.type === 'multi') return Array.isArray(value) && value.length > 0;
+      return value !== '';
     }
 
-    function canContinue() {
+    function canContinue(){
       const step = steps[state.currentStep];
-      if (step.type === "summary") {
+      if(step.type === 'summary'){
         const c = state.answers.contact;
         return Boolean(c.name && c.company && c.email && c.phone && c.privacy);
       }
       return isStepComplete(step);
     }
 
-    function getProgress() {
+    function getProgress(){
       const total = steps.length;
       const current = state.currentStep + 1;
       return { current, total, percent: Math.round((current / total) * 100) };
     }
 
-    function markVisited(index) {
-      state.maxVisitedStep = Math.max(state.maxVisitedStep, index);
-    }
-
-    function summaryIndex() {
-      return steps.findIndex((s) => s.key === SUMMARY_KEY);
-    }
-
-    function updateDependencies(changedKey, changedValue) {
-      if (changedKey === 'roomSize') {
-        if (changedValue === 'huddle' && state.answers.display === 'dual') {
-          state.answers.display = '';
-        }
-        if (['large', 'individual'].includes(changedValue) && state.answers.budget === 'under_5000') {
-          state.answers.budget = '';
-        }
+    function updateDependencies(changedKey, value){
+      if(changedKey === 'roomSize'){
+        if(value === 'huddle' && state.answers.display === 'dual') state.answers.display = '';
+        if(['large','individual'].includes(value) && state.answers.budget === 'under_5000') state.answers.budget = '';
       }
     }
 
-    function goToStep(index) {
-      state.currentStep = index;
-      markVisited(index);
-      render();
-    }
-
-    function renderStepNav() {
-      els.stepNav.innerHTML = steps.map((step, index) => {
-        const isCurrent = index === state.currentStep;
-        const canJump = index <= state.maxVisitedStep;
-        const done = index < state.currentStep || (index < steps.length - 1 && isStepComplete(step));
-        return `
-          <button
-            type="button"
-            class="step-chip ${isCurrent ? 'current' : ''} ${done ? 'done' : ''} ${canJump ? '' : 'locked'}"
-            data-step-index="${index}"
-            ${canJump ? '' : 'disabled'}
-          >${escapeHtml(step.navLabel || `Schritt ${index + 1}`)}</button>
-        `;
+    function renderStepNav(){
+      els.stepNav.innerHTML = steps.map((step, i) => {
+        const current = i === state.currentStep;
+        const canJump = i <= state.maxVisitedStep;
+        const done = i < state.currentStep || (i < steps.length - 1 && isStepComplete(step));
+        return `<button type="button" class="step-chip ${current ? 'current' : ''} ${done ? 'done' : ''} ${canJump ? '' : 'locked'}" data-step-index="${i}" ${canJump ? '' : 'disabled'}>${escapeHtml(step.navLabel)}</button>`;
       }).join('');
 
-      els.stepNav.querySelectorAll('.step-chip').forEach((el) => {
-        el.addEventListener('click', () => {
-          const index = Number(el.dataset.stepIndex);
-          if (Number.isInteger(index) && index <= state.maxVisitedStep) {
-            goToStep(index);
+      els.stepNav.querySelectorAll('.step-chip').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const i = Number(btn.dataset.stepIndex);
+          if(Number.isInteger(i) && i <= state.maxVisitedStep){
+            state.currentStep = i;
+            render();
           }
         });
       });
     }
 
-    function renderImageOrFallback(option, fallbackHtml) {
-      if (option.image) {
-        return `
-          <div class="illustration">
-            <img src="${escapeHtml(option.image)}" alt="${escapeHtml(option.title)}" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.closest('.illustration').innerHTML='<div class=\'image-frame\'>Bild-Platzhalter</div>'">
-          </div>
-        `;
+    function imageOrFallback(option, fallback){
+      if(option.image){
+        return `<div class="illu"><img src="${escapeHtml(option.image)}" alt="${escapeHtml(option.title)}" onerror="this.closest('.illu').innerHTML='<div class=\'placeholder\'>Bild-Platzhalter</div>'"></div>`;
       }
-      return fallbackHtml;
+      return fallback;
     }
 
-    function roomSceneSvg(type, option) {
-      const presets = {
-        huddle: { width: 70, height: 44, rx: 22, seats: [[50,18],[28,50],[50,82],[72,50]], radius: 4 },
-        medium: { width: 98, height: 40, rx: 16, seats: [[22,28],[22,72],[40,17],[40,83],[60,17],[60,83],[78,28],[78,72]], radius: 4 },
-        large: { width: 124, height: 32, rx: 16, seats: [[14,26],[14,50],[14,74],[32,18],[32,82],[50,18],[50,82],[68,18],[68,82],[86,18],[86,82],[104,26],[104,50],[104,74]], radius: 3.5 },
-        individual: { width: 128, height: 28, rx: 14, seats: [[8,20],[8,36],[8,52],[8,68],[8,84],[26,12],[26,92],[44,12],[44,92],[62,12],[62,92],[80,12],[80,92],[98,12],[98,92],[116,20],[116,36],[116,52],[116,68],[116,84]], radius: 3.2 }
-      };
-      const p = presets[type] || presets.medium;
-      const tableX = (160 - p.width) / 2;
-      const tableY = (100 - p.height) / 2;
-      const chairs = p.seats.map(([x,y]) => `<circle cx="${x}" cy="${y}" r="${p.radius}" fill="rgba(0,157,223,.9)"/>`).join('');
-      const banner = option.value === 'individual'
-        ? '<rect x="52" y="10" width="56" height="10" rx="5" fill="#eaf7fd" stroke="#cfefff"/><text x="80" y="17" text-anchor="middle" font-size="6" fill="#087db0" font-family="Sora, sans-serif">INDIVIDUELL</text>'
-        : '<rect x="58" y="10" width="44" height="10" rx="5" fill="#009DDF" opacity=".18"/><rect x="70" y="12.5" width="20" height="5" rx="2.5" fill="#009DDF"/>';
+    function roomSvg(type, option){
+      const data = {
+        huddle:{ title:'Huddle', shape:'round', table:{x:48,y:18,w:64,h:64,rx:32}, seats:[[80,10],[118,50],[80,90],[42,50]] },
+        medium:{ title:'Medium', shape:'wide', table:{x:34,y:28,w:92,h:44,rx:22}, seats:[[50,18],[66,18],[94,18],[110,18],[50,82],[66,82],[94,82],[110,82]] },
+        large:{ title:'Large', shape:'long', table:{x:24,y:32,w:112,h:36,rx:18}, seats:[[38,20],[54,20],[70,20],[86,20],[102,20],[118,20],[38,80],[54,80],[70,80],[86,80],[102,80],[118,80]] },
+        individual:{ title:'Individuell', shape:'board', table:{x:20,y:35,w:120,h:30,rx:15}, seats:[[30,18],[46,18],[62,18],[78,18],[94,18],[110,18],[126,18],[30,82],[46,82],[62,82],[78,82],[94,82],[110,82],[126,82],[14,35],[14,50],[14,65],[146,35],[146,50],[146,65]] }
+      }[type] || { table:{x:34,y:28,w:92,h:44,rx:22}, seats:[] };
 
-      return renderImageOrFallback(option, `
-        <div class="illustration">
-          <svg viewBox="0 0 160 100" class="room-svg" aria-hidden="true">
-            <defs>
-              <linearGradient id="tableGrad-${type}" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="100%" stop-color="#f3f2ee"/>
-              </linearGradient>
-            </defs>
-            ${banner}
-            <rect x="${tableX}" y="${tableY}" width="${p.width}" height="${p.height}" rx="${p.rx}" fill="url(#tableGrad-${type})" stroke="#e3e0d9" stroke-width="1.3"/>
-            <rect x="${tableX + 8}" y="${tableY + 6}" width="${Math.max(18, p.width - 16)}" height="${Math.max(10, p.height - 12)}" rx="${Math.max(8, p.rx - 6)}" fill="#fbfbf9" stroke="#efede7" stroke-width="0.8"/>
-            ${chairs}
+      const seats = data.seats.map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3.9" fill="rgba(0,157,223,.92)"/>`).join('');
+      const t = data.table;
+      const label = type === 'individual'
+        ? '<rect x="48" y="8" width="64" height="12" rx="6" fill="#eaf7fd" stroke="#d4f2fd"/><text x="80" y="16.2" text-anchor="middle" font-size="6.4" fill="#087db0" font-family="Sora, sans-serif">INDIVIDUELL</text>'
+        : '<rect x="58" y="10" width="44" height="10" rx="5" fill="#009DDF" opacity=".14"/><rect x="70" y="12.5" width="20" height="5" rx="2.5" fill="#009DDF"/>';
+
+      return imageOrFallback(option, `
+        <div class="illu">
+          <svg viewBox="0 0 160 100" aria-hidden="true">
+            <defs><linearGradient id="tg-${type}" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f2f1ed"/></linearGradient></defs>
+            ${label}
+            <rect x="${t.x}" y="${t.y}" width="${t.w}" height="${t.h}" rx="${t.rx}" fill="url(#tg-${type})" stroke="#e3e0d9" stroke-width="1.3"/>
+            <rect x="${t.x + 7}" y="${t.y + 5}" width="${Math.max(18, t.w - 14)}" height="${Math.max(10, t.h - 10)}" rx="${Math.max(8, t.rx - 7)}" fill="#fbfbf9" stroke="#efede7" stroke-width=".8"/>
+            ${seats}
           </svg>
-        </div>
-      `);
+        </div>`);
     }
 
-    function displaySceneSvg(type, option) {
-      if (type === 'single') {
-        return renderImageOrFallback(option, `
-          <div class="illustration">
-            <svg viewBox="0 0 160 100" class="display-svg" aria-hidden="true">
-              <rect x="34" y="20" width="92" height="50" rx="10" fill="#171717"/>
-              <rect x="39" y="25" width="82" height="40" rx="7" fill="#e8f7fd"/>
-              <rect x="72" y="74" width="16" height="4" rx="2" fill="#a6a39b"/>
-              <rect x="60" y="78" width="40" height="5" rx="2.5" fill="#c8c5be"/>
-            </svg>
-          </div>
-        `);
-      }
-      if (type === 'dual') {
-        return renderImageOrFallback(option, `
-          <div class="illustration">
-            <svg viewBox="0 0 160 100" class="display-svg" aria-hidden="true">
-              <rect x="20" y="24" width="56" height="34" rx="8" fill="#171717"/>
-              <rect x="84" y="24" width="56" height="34" rx="8" fill="#171717"/>
-              <rect x="24" y="28" width="48" height="26" rx="5" fill="#e8f7fd"/>
-              <rect x="88" y="28" width="48" height="26" rx="5" fill="#e8f7fd"/>
-              <rect x="44" y="62" width="72" height="4" rx="2" fill="#a6a39b"/>
-              <rect x="32" y="66" width="96" height="6" rx="3" fill="#c8c5be"/>
-            </svg>
-          </div>
-        `);
-      }
-      return renderImageOrFallback(option, `
-        <div class="illustration">
-          <svg viewBox="0 0 160 100" class="display-svg" aria-hidden="true">
-            <defs>
-              <linearGradient id="touchGrad" x1="0" x2="1" y1="0" y2="1">
-                <stop offset="0%" stop-color="#17384c"/>
-                <stop offset="100%" stop-color="#244a62"/>
-              </linearGradient>
-            </defs>
-            <rect x="36" y="12" width="88" height="58" rx="14" fill="url(#touchGrad)"/>
-            <rect x="42" y="18" width="76" height="46" rx="10" fill="#173346" stroke="#e8f7fd" stroke-width="1.3"/>
-            <circle cx="80" cy="41" r="11" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.9)" stroke-width="1.5"/>
-            <circle cx="110" cy="67" r="5" fill="#009DDF"/>
-            <circle cx="110" cy="67" r="12" fill="rgba(0,157,223,.12)"/>
-            <rect x="68" y="74" width="24" height="4" rx="2" fill="#a6a39b"/>
-            <rect x="58" y="78" width="44" height="5" rx="2.5" fill="#c8c5be"/>
-          </svg>
-        </div>
-      `);
+    function displaySvg(type, option){
+      if(type === 'single') return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><rect x="34" y="20" width="92" height="50" rx="10" fill="#171717"/><rect x="39" y="25" width="82" height="40" rx="7" fill="#e8f7fd"/><rect x="72" y="74" width="16" height="4" rx="2" fill="#a6a39b"/><rect x="60" y="78" width="40" height="5" rx="2.5" fill="#c8c5be"/></svg></div>`);
+      if(type === 'dual') return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><rect x="18" y="24" width="58" height="34" rx="8" fill="#171717"/><rect x="84" y="24" width="58" height="34" rx="8" fill="#171717"/><rect x="22" y="28" width="50" height="26" rx="5" fill="#e8f7fd"/><rect x="88" y="28" width="50" height="26" rx="5" fill="#e8f7fd"/><rect x="32" y="64" width="96" height="5" rx="2.5" fill="#b9b7b0"/></svg></div>`);
+      return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><defs><linearGradient id="touchGrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#17384c"/><stop offset="100%" stop-color="#244a62"/></linearGradient></defs><rect x="34" y="12" width="92" height="58" rx="14" fill="url(#touchGrad)"/><rect x="40" y="18" width="80" height="46" rx="10" fill="#173346" stroke="#e8f7fd" stroke-width="1.2"/><line x1="59" y1="40" x2="101" y2="40" stroke="rgba(255,255,255,.22)"/><line x1="80" y1="20" x2="80" y2="60" stroke="rgba(255,255,255,.18)"/><circle cx="104" cy="67" r="5" fill="#009DDF"/><circle cx="104" cy="67" r="12" fill="rgba(0,157,223,.12)"/><rect x="68" y="74" width="24" height="4" rx="2" fill="#a6a39b"/><rect x="58" y="78" width="44" height="5" rx="2.5" fill="#c8c5be"/></svg></div>`);
     }
 
-    function doorSignSvg(option) {
+    function doorSvg(option){
       const active = option.value === 'yes';
-      return renderImageOrFallback(option, `
-        <div class="illustration">
-          <svg viewBox="0 0 160 100" class="door-svg" aria-hidden="true">
-            <rect x="20" y="16" width="48" height="68" rx="8" fill="#fff" stroke="#e7e4dd"/>
-            <circle cx="58" cy="50" r="2.8" fill="#bfbcb5"/>
-            <rect x="84" y="28" width="56" height="30" rx="8" fill="#ffffff" stroke="#e0ddd6"/>
-            <rect x="90" y="34" width="44" height="8" rx="4" fill="${active ? '#dff5e5' : '#f2f1ed'}"/>
-            <rect x="90" y="46" width="26" height="4" rx="2" fill="#c2bfb8"/>
-            <rect x="120" y="46" width="14" height="4" rx="2" fill="${active ? '#1e7e34' : '#b7b4ad'}"/>
-            <circle cx="128" cy="38" r="4" fill="${active ? '#2ea44f' : '#d0cdc6'}"/>
-          </svg>
-        </div>
-      `);
+      return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><rect x="18" y="15" width="50" height="70" rx="8" fill="#fff" stroke="#e7e4dd"/><circle cx="58" cy="50" r="2.8" fill="#bfbcb5"/><rect x="82" y="28" width="58" height="32" rx="9" fill="#fff" stroke="#e0ddd6"/><rect x="90" y="34" width="42" height="8" rx="4" fill="${active ? '#dff5e5' : '#f2f1ed'}"/><rect x="90" y="46" width="24" height="4" rx="2" fill="#c2bfb8"/><rect x="118" y="46" width="14" height="4" rx="2" fill="${active ? '#1e7e34' : '#b7b4ad'}"/><circle cx="126" cy="38" r="4.2" fill="${active ? '#2ea44f' : '#d0cdc6'}"/></svg></div>`);
     }
 
-    function mountSvg(type, option) {
-      if (type === 'wall') {
-        return renderImageOrFallback(option, `
-          <div class="illustration">
-            <svg viewBox="0 0 160 100" class="mount-svg" aria-hidden="true">
-              <rect x="20" y="16" width="10" height="68" rx="4" fill="#ece9e2"/>
-              <rect x="44" y="22" width="78" height="42" rx="10" fill="#171717"/>
-              <rect x="49" y="27" width="68" height="32" rx="7" fill="#e8f7fd"/>
-              <rect x="34" y="40" width="14" height="6" rx="3" fill="#9d9a92"/>
-              <rect x="72" y="66" width="22" height="4" rx="2" fill="#a6a39b"/>
-            </svg>
-          </div>
-        `);
-      }
-      return renderImageOrFallback(option, `
-        <div class="illustration">
-          <svg viewBox="0 0 160 100" class="mount-svg" aria-hidden="true">
-            <rect x="44" y="18" width="72" height="40" rx="10" fill="#171717"/>
-            <rect x="49" y="23" width="62" height="30" rx="7" fill="#e8f7fd"/>
-            <rect x="76" y="58" width="8" height="14" rx="4" fill="#9d9a92"/>
-            <path d="M58 84 C64 72, 96 72, 102 84" fill="none" stroke="#9d9a92" stroke-width="5" stroke-linecap="round"/>
-            <path d="M64 92 L58 84 M96 92 L102 84" fill="none" stroke="#b3b0a9" stroke-width="3" stroke-linecap="round"/>
-          </svg>
-        </div>
-      `);
+    function mountSvg(type, option){
+      if(type === 'wall') return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><rect x="18" y="16" width="12" height="68" rx="4" fill="#ece9e2"/><rect x="44" y="22" width="78" height="42" rx="10" fill="#171717"/><rect x="49" y="27" width="68" height="32" rx="7" fill="#e8f7fd"/><rect x="32" y="40" width="12" height="6" rx="3" fill="#9d9a92"/><rect x="72" y="66" width="22" height="4" rx="2" fill="#a6a39b"/></svg></div>`);
+      return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><rect x="44" y="18" width="72" height="40" rx="10" fill="#171717"/><rect x="49" y="23" width="62" height="30" rx="7" fill="#e8f7fd"/><rect x="76" y="58" width="8" height="14" rx="4" fill="#9d9a92"/><path d="M60 84 C67 72, 93 72, 100 84" fill="none" stroke="#9d9a92" stroke-width="5" stroke-linecap="round"/><path d="M66 92 L60 84 M94 92 L100 84" fill="none" stroke="#b3b0a9" stroke-width="3" stroke-linecap="round"/></svg></div>`);
     }
 
-    function micSvg(option) {
+    function micSvg(option){
       const enabled = option.value === 'yes';
       const unsure = option.value === 'unsure';
-      return renderImageOrFallback(option, `
-        <div class="illustration">
-          <svg viewBox="0 0 160 100" class="mic-svg" aria-hidden="true">
-            <rect x="22" y="18" width="116" height="6" rx="3" fill="#d7d4cd"/>
-            <line x1="80" y1="24" x2="80" y2="48" stroke="#b6b3ab" stroke-width="2.5"/>
-            <circle cx="80" cy="56" r="12" fill="${enabled ? '#009DDF' : unsure ? '#f5c26b' : '#d7d4cd'}" opacity=".18"/>
-            <circle cx="80" cy="56" r="7" fill="${enabled ? '#009DDF' : unsure ? '#e39d23' : '#b8b4ad'}"/>
-            <rect x="58" y="68" width="44" height="6" rx="3" fill="#ece9e2"/>
-          </svg>
-        </div>
-      `);
+      return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><rect x="22" y="18" width="116" height="6" rx="3" fill="#d7d4cd"/><line x1="80" y1="24" x2="80" y2="48" stroke="#b6b3ab" stroke-width="2.5"/><circle cx="80" cy="56" r="12" fill="${enabled ? '#009DDF' : unsure ? '#f5c26b' : '#d7d4cd'}" opacity=".18"/><circle cx="80" cy="56" r="7" fill="${enabled ? '#009DDF' : unsure ? '#e39d23' : '#b8b4ad'}"/><rect x="58" y="68" width="44" height="6" rx="3" fill="#ece9e2"/></svg></div>`);
     }
 
-    function genericPlaceholder(option, title = 'Platzhalter') {
-      return renderImageOrFallback(option, `<div class="illustration"><div class="image-frame">${escapeHtml(title)}</div></div>`);
+    function genericPlaceholder(option, label){
+      return imageOrFallback(option, `<div class="illu"><div class="placeholder">${escapeHtml(label)}</div></div>`);
     }
 
-    function renderIllustration(stepKey, option) {
-      if (stepKey === 'roomSize') return roomSceneSvg(option.value, option);
-      if (stepKey === 'display') return displaySceneSvg(option.value, option);
-      if (stepKey === 'doorSign') return doorSignSvg(option);
-      if (stepKey === 'mounting') return mountSvg(option.value, option);
-      if (stepKey === 'ceilingMic') return micSvg(option);
-      if (stepKey === 'requirements') return genericPlaceholder(option, 'Feature');
-      if (stepKey === 'roomConditions') return genericPlaceholder(option, 'Raumfaktor');
-      if (stepKey === 'manufacturer') return genericPlaceholder(option, 'Hersteller');
-      return genericPlaceholder(option);
+    function renderIllustration(stepKey, option){
+      if(stepKey === 'roomSize') return roomSvg(option.value, option);
+      if(stepKey === 'display') return displaySvg(option.value, option);
+      if(stepKey === 'doorSign') return doorSvg(option);
+      if(stepKey === 'mounting') return mountSvg(option.value, option);
+      if(stepKey === 'ceilingMic') return micSvg(option);
+      if(stepKey === 'requirements') return genericPlaceholder(option, 'Feature');
+      if(stepKey === 'roomConditions') return genericPlaceholder(option, 'Raumfaktor');
+      if(stepKey === 'manufacturer') return genericPlaceholder(option, 'Hersteller');
+      return genericPlaceholder(option, 'Platzhalter');
     }
 
-    function renderCards(step) {
-      const currentValue = state.answers[step.key];
+    function renderCards(step){
+      const current = state.answers[step.key];
       const colsClass = step.options.length === 2 ? 'cols-2' : step.options.length >= 4 ? 'cols-4' : '';
       const helper = typeof step.helper === 'function' ? step.helper() : '';
-
-      const cards = step.options.map((option) => {
+      const cards = step.options.map(option => {
         const disabled = typeof option.disabled === 'function' ? option.disabled() : false;
-        const selected = step.type === 'multi'
-          ? currentValue.includes(option.value)
-          : currentValue === option.value;
-
+        const selected = step.type === 'multi' ? current.includes(option.value) : current === option.value;
         return `
           <button type="button" class="card ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''}" data-value="${option.value}" ${disabled ? 'disabled' : ''}>
             <div class="meta">
@@ -1023,32 +450,28 @@
               <span class="mini-label">${escapeHtml(option.tag || 'Option')}</span>
             </div>
             ${renderIllustration(step.key, option)}
-          </button>
-        `;
+          </button>`;
       }).join('');
-
-      return `
-        ${helper ? `<p class="helper">${escapeHtml(helper)}</p>` : ''}
-        <div class="cards ${colsClass}">${cards}</div>
-      `;
+      return `${helper ? `<p class="helper">${escapeHtml(helper)}</p>` : ''}<div class="cards ${colsClass}">${cards}</div>`;
     }
 
-    function listLabels(key, values) {
-      if (!Array.isArray(values) || !values.length) return '<p>Keine Auswahl</p>';
-      return `<ul>${values.map((item) => `<li>${escapeHtml(optionLabelMap[key][item] || item)}</li>`).join('')}</ul>`;
+    function listLabels(key, values){
+      if(!Array.isArray(values) || !values.length) return '<p>Keine Auswahl</p>';
+      return `<ul>${values.map(v => `<li>${escapeHtml(optionLabelMap[key][v] || v)}</li>`).join('')}</ul>`;
     }
 
-    function getPayload() {
+    function getPayload(){
       return {
-        roomSize: state.answers.roomSize,
-        budget: state.answers.budget,
-        display: state.answers.display,
+        roomSize: state.answers.roomSize || null,
+        budget: state.answers.budget || null,
+        display: state.answers.display || null,
         doorSign: state.answers.doorSign === 'yes',
-        mounting: state.answers.mounting,
-        ceilingMic: state.answers.ceilingMic,
+        mounting: state.answers.mounting || null,
+        ceilingMic: state.answers.ceilingMic || null,
         requirements: state.answers.requirements,
         roomConditions: state.answers.roomConditions,
-        manufacturer: state.answers.manufacturer,
+        manufacturer: state.answers.manufacturer || null,
+        manufacturerLabel: optionLabelMap.manufacturer[state.answers.manufacturer] || null,
         contact: {
           name: state.answers.contact.name,
           company: state.answers.contact.company,
@@ -1060,13 +483,13 @@
     }
 
     const apiService = {
-      async submitLead(payload) {
-        await new Promise((resolve) => setTimeout(resolve, 700));
-        return { ok: true, status: 200, data: payload };
+      async submitLead(payload){
+        await new Promise(resolve => setTimeout(resolve, 700));
+        return { ok:true, status:200, data:payload };
       }
     };
 
-    function renderSummary() {
+    function renderSummary(){
       const payload = getPayload();
       return `
         <div class="summary-grid">
@@ -1079,7 +502,6 @@
           <div class="summary-card"><h4>Funktionen</h4>${listLabels('requirements', state.answers.requirements)}</div>
           <div class="summary-card"><h4>Raumgegebenheiten</h4>${listLabels('roomConditions', state.answers.roomConditions)}</div>
           <div class="summary-card"><h4>MTR-Hersteller</h4><p>${escapeHtml(optionLabelMap.manufacturer[state.answers.manufacturer] || '-')}</p></div>
-          <div class="summary-card"><h4>Hinweis</h4><p>Der JSON-Block ist nur für Demo / Debug und aktualisiert sich jetzt live mit den Formulardaten.</p></div>
         </div>
 
         <div class="summary-card" style="margin-bottom:10px;">
@@ -1121,24 +543,22 @@
             <pre class="json-preview" id="jsonPreview">${escapeHtml(JSON.stringify(payload, null, 2))}</pre>
           </details>
           <div class="success" id="successBox">Vielen Dank. Die Demo hat den Payload erfolgreich an den vorbereiteten API-Layer übergeben.</div>
-        </div>
-      `;
+        </div>`;
     }
 
-    function updateJsonPreview() {
+    function updateJsonPreview(){
       const pre = document.getElementById('jsonPreview');
-      if (pre) pre.textContent = JSON.stringify(getPayload(), null, 2);
+      if(pre) pre.textContent = JSON.stringify(getPayload(), null, 2);
     }
 
-    function bindCardEvents(step) {
-      els.content.querySelectorAll('.card').forEach((card) => {
+    function bindCardEvents(step){
+      els.content.querySelectorAll('.card').forEach(card => {
         card.addEventListener('click', () => {
-          const { value } = card.dataset;
-          if (step.type === 'single') {
+          const value = card.dataset.value;
+          if(step.type === 'single'){
             state.answers[step.key] = value;
             updateDependencies(step.key, value);
-
-            if (step.key === 'roomSize' && value === 'individual') {
+            if(step.key === 'roomSize' && value === 'individual'){
               const target = summaryIndex();
               state.currentStep = target;
               markVisited(target);
@@ -1147,9 +567,8 @@
             }
           } else {
             const list = state.answers[step.key];
-            const index = list.indexOf(value);
-            if (index > -1) list.splice(index, 1);
-            else list.push(value);
+            const idx = list.indexOf(value);
+            if(idx > -1) list.splice(idx, 1); else list.push(value);
           }
           markVisited(state.currentStep);
           render();
@@ -1157,39 +576,35 @@
       });
     }
 
-    function bindSummaryInputs() {
-      ["name", "company", "email", "phone", "message"].forEach((id) => {
-        const input = document.getElementById(id);
-        input?.addEventListener('input', (e) => {
+    function bindSummaryInputs(){
+      ['name','company','email','phone','message'].forEach(id => {
+        document.getElementById(id)?.addEventListener('input', e => {
           state.answers.contact[id] = e.target.value;
           updateJsonPreview();
           els.nextBtn.disabled = !canContinue();
         });
       });
-
-      document.getElementById('privacy')?.addEventListener('change', (e) => {
+      document.getElementById('privacy')?.addEventListener('change', e => {
         state.answers.contact.privacy = e.target.checked;
         updateJsonPreview();
         els.nextBtn.disabled = !canContinue();
       });
     }
 
-    function render() {
+    function render(){
       const step = steps[state.currentStep];
       const progress = getProgress();
-
       els.progressLabel.textContent = `Schritt ${progress.current} von ${progress.total}`;
       els.progressBar.style.width = `${progress.percent}%`;
       els.stepTitle.textContent = step.title;
       els.stepSubtitle.textContent = step.subtitle;
-
       const note = typeof step.note === 'function' ? step.note() : '';
       els.noticeBox.style.display = note ? 'block' : 'none';
       els.noticeBox.textContent = note;
 
       renderStepNav();
 
-      if (step.type === 'summary') {
+      if(step.type === 'summary'){
         els.content.innerHTML = renderSummary();
         bindSummaryInputs();
         els.nextBtn.textContent = 'Anfrage absenden';
@@ -1198,9 +613,9 @@
         els.content.innerHTML = renderCards(step);
         bindCardEvents(step);
         els.nextBtn.textContent = 'Weiter';
-        els.footerNote.textContent = step.type === 'multi'
-          ? 'Mehrfachauswahl möglich.'
-          : 'Wählen Sie eine Option, um fortzufahren.';
+        if(step.optional && step.type === 'multi') els.footerNote.textContent = 'Mehrfachauswahl möglich – dieser Schritt ist optional.';
+        else if(step.optional) els.footerNote.textContent = 'Dieser Schritt ist optional.';
+        else els.footerNote.textContent = step.type === 'multi' ? 'Mehrfachauswahl möglich.' : 'Wählen Sie eine Option, um fortzufahren.';
       }
 
       els.backBtn.disabled = state.currentStep === 0;
@@ -1208,7 +623,7 @@
     }
 
     els.backBtn.addEventListener('click', () => {
-      if (state.currentStep > 0) {
+      if(state.currentStep > 0){
         state.currentStep -= 1;
         markVisited(state.currentStep);
         render();
@@ -1216,33 +631,29 @@
     });
 
     els.nextBtn.addEventListener('click', async () => {
-      if (!canContinue()) return;
-
-      const current = steps[state.currentStep];
-      const isSummary = current.type === 'summary';
-      if (!isSummary) {
+      if(!canContinue()) return;
+      const step = steps[state.currentStep];
+      if(step.type !== 'summary'){
         state.currentStep += 1;
         markVisited(state.currentStep);
         render();
         return;
       }
-
       els.nextBtn.disabled = true;
       els.nextBtn.textContent = 'Wird gesendet ...';
       try {
-        const payload = getPayload();
-        const result = await apiService.submitLead(payload);
-        if (result.ok) {
+        const result = await apiService.submitLead(getPayload());
+        if(result.ok){
           const success = document.getElementById('successBox');
-          if (success) success.style.display = 'block';
+          if(success) success.style.display = 'block';
           els.footerNote.textContent = 'Demo erfolgreich abgeschlossen.';
           els.nextBtn.textContent = 'Erfolgreich gesendet';
         } else {
           els.nextBtn.textContent = 'Erneut versuchen';
           els.nextBtn.disabled = false;
         }
-      } catch (error) {
-        console.error(error);
+      } catch(err){
+        console.error(err);
         els.footerNote.textContent = 'Fehler beim Senden des Demo-Payloads.';
         els.nextBtn.textContent = 'Erneut versuchen';
         els.nextBtn.disabled = false;
