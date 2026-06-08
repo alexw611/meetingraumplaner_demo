@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meetingraum-Konfigurator</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
   <style>
     :root {
       --brand:#009DDF;
@@ -50,7 +50,14 @@
     .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
     .cards.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     .cards.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
-    .card{appearance:none;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);text-align:left;padding:18px;min-height:212px;display:flex;flex-direction:column;gap:14px;cursor:pointer;transition:transform .22s var(--ease),border-color .22s var(--ease),box-shadow .22s var(--ease),background .22s var(--ease);overflow:hidden}
+    .cards.step-room-size{grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch}
+    .cards.step-room-size .card{min-height:172px}
+    .cards.step-room-size .card.special-compact{min-height:172px}
+    .cards.step-room-size .card .card-title{font-size:.98rem}
+    .cards.step-room-size .card .card-desc{font-size:.88rem;line-height:1.5}
+    .cards.step-room-size .card.special-compact .meta{align-items:flex-start}
+    .cards.step-room-size .card.special-compact .mini-label{max-width:none}
+    .card{appearance:none;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);text-align:left;padding:16px;min-height:196px;display:flex;flex-direction:column;gap:14px;cursor:pointer;transition:transform .22s var(--ease),border-color .22s var(--ease),box-shadow .22s var(--ease),background .22s var(--ease);overflow:hidden}
     .card:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:var(--shadow)}
     .card.selected{border-color:rgba(0,157,223,.35);background:linear-gradient(180deg,#fff,#f9fdff);box-shadow:0 0 0 2px rgba(0,157,223,.08),var(--shadow-card)}
     .card.disabled{opacity:.48;filter:grayscale(.04);cursor:not-allowed;transform:none !important;box-shadow:none}
@@ -59,10 +66,14 @@
     .card-title{margin:0 0 6px;font-size:1rem;font-weight:600;letter-spacing:-.02em;line-height:1.28;overflow-wrap:anywhere}
     .card-desc{margin:0;font-size:.9rem;line-height:1.58;color:#565652;overflow-wrap:anywhere}
     .mini-label{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;max-width:44%;padding:6px 9px;border-radius:999px;border:1px solid #ece9e2;background:#f6f5f1;color:#88857e;font-size:11px;letter-spacing:.08em;text-transform:uppercase;overflow-wrap:anywhere;text-align:center}
-    .illu{height:104px;border-radius:14px;background:linear-gradient(180deg,#fafaf7,#f4f3ef);border:1px solid #efede7;position:relative;overflow:hidden}
+    .illu{height:92px;border-radius:14px;background:linear-gradient(180deg,#fafaf7,#f4f3ef);border:1px solid #efede7;position:relative;overflow:hidden}
     .illu img{width:100%;height:100%;object-fit:cover;display:block}
     .illu svg{width:100%;height:100%;display:block}
     .placeholder{width:100%;height:100%;display:grid;place-items:center;color:#9b9890;font-size:.76rem;letter-spacing:.03em;text-transform:uppercase;background:repeating-linear-gradient(135deg,#f6f5f1 0,#f6f5f1 8px,#f2f1ed 8px,#f2f1ed 16px)}
+    .callout{margin-bottom:12px;padding:14px 16px;border-radius:16px;border:1px solid rgba(0,157,223,.14);background:linear-gradient(180deg,#fff,#f7fbfd)}
+    .callout h3{margin:0 0 8px;font-size:1rem;letter-spacing:-.02em}
+    .callout p{margin:0;color:var(--muted);line-height:1.65;font-size:.94rem}
+    .callout ul{margin:10px 0 0;padding-left:18px;color:#464540;line-height:1.6}
     .summary-grid,.form-grid{display:grid;gap:10px}
     .summary-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:10px}
     .form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -80,7 +91,7 @@
     details.debug summary::-webkit-details-marker{display:none}
     .json-preview{background:#111;color:#e8f6fb;margin:0;padding:16px;overflow:auto;font-size:.86rem;line-height:1.55}
     .actions{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
-    .status{font-size:.9rem;line-height:1.5;color:var(--muted)}
+    .status{font-size:.9rem;line-height:1.5;color:var(--muted);max-width:58ch}
     .btn-row{display:flex;gap:8px;flex-wrap:wrap}
     .btn{appearance:none;border:none;min-height:44px;padding:0 18px;border-radius:999px;font-size:.92rem;font-weight:500;cursor:pointer;transition:transform .2s var(--ease),opacity .2s var(--ease),background .2s var(--ease),color .2s var(--ease)}
     .btn:hover{transform:translateY(-1px)}
@@ -90,9 +101,9 @@
     .btn-primary:hover{background:#222}
     .success{display:none;margin-top:8px;padding:13px 14px;border-radius:12px;background:#edf8ef;border:1px solid #d7ecd9;color:var(--ok);font-size:.92rem}
     @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-    @media (max-width:920px){.cards.cols-4{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media (max-width:920px){.cards.cols-4,.cards.step-room-size{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media (max-width:860px){.summary-grid,.form-grid{grid-template-columns:1fr}}
-    @media (max-width:740px){.cards,.cards.cols-2,.cards.cols-4{grid-template-columns:1fr}.actions{flex-direction:column;align-items:stretch}.btn-row,.btn{width:100%}.topbar{flex-direction:column;align-items:flex-start}.title{max-width:none}}
+    @media (max-width:740px){.cards,.cards.cols-2,.cards.cols-4,.cards.step-room-size{grid-template-columns:1fr}.actions{flex-direction:column;align-items:stretch}.btn-row,.btn{width:100%}.topbar{flex-direction:column;align-items:flex-start}.title{max-width:none}}
   </style>
 </head>
 <body>
@@ -110,7 +121,7 @@
     <nav class="step-nav" id="stepNav" aria-label="Schrittübersicht"></nav>
     <section class="hero">
       <h2 class="title" id="stepTitle">Wie viele Personen nutzen den Raum?</h2>
-      <p class="subtitle" id="stepSubtitle">Wählen Sie die passende Raumgröße. Die nächsten Schritte passen sich daran an.</p>
+      <p class="subtitle" id="stepSubtitle">Wählen Sie die passende Raumgröße für einfache MTR-Räume. Für LED Wall, Video Wall, Hörsaal, Veranstaltungsraum oder andere komplexe AV-Projekte wählen Sie bitte „Individual“ – Sie können darüber ebenfalls direkt Kontakt aufnehmen.</p>
       <div class="notice" id="noticeBox"></div>
     </section>
     <main class="content" id="content"></main>
@@ -136,7 +147,7 @@
     };
 
     const optionLabelMap = {
-      roomSize: { huddle:'Huddle (1–4 Personen)', medium:'Medium (5–8 Personen)', large:'Large (9–16 Personen)', individual:'Individual (17+ Personen)' },
+      roomSize: { huddle:'Huddle (1–4 Personen)', medium:'Medium (5–8 Personen)', large:'Large (9–16 Personen)', individual:'Individual' },
       budget: { under_5000:'Unter 5.000 €', between_5000_15000:'5.000 € – 15.000 €', over_15000:'Über 15.000 €' },
       display: { single:'Single Display', dual:'Dual Display', touch:'Touch Display' },
       doorSign: { yes:'Ja', no:'Nein' },
@@ -148,11 +159,11 @@
     };
 
     const steps = [
-      { key:'roomSize', navLabel:'Raumgröße', type:'single', title:'Wie viele Personen nutzen den Raum?', subtitle:'Wählen Sie die passende Raumgröße. Die nächsten Schritte passen sich daran an.', note:() => state.answers.roomSize === 'individual' ? 'Für Räume ab 17 Personen springen wir direkt zur Anfrage, damit wir die Lösung individuell planen können.' : '', options:[
+      { key:'roomSize', navLabel:'Raumgröße', type:'single', title:'Wie viele Personen nutzen den Raum?', subtitle:'Wählen Sie die passende Raumgröße für einfache MTR-Räume. Für LED Wall, Video Wall, Hörsaal, Veranstaltungsraum oder andere komplexe AV-Projekte wählen Sie bitte „Individual“ – Sie können darüber ebenfalls direkt Kontakt aufnehmen.', note:() => state.answers.roomSize === 'individual' ? 'Individual ist für Sonderprojekte wie LED Wall, Video Wall, Hörsaal oder Veranstaltungsraum gedacht. Über Weiter gelangen Sie direkt zur Anfrage.' : '', options:[
         { value:'huddle', title:'Huddle', desc:'1–4 Personen', tag:'Klein' },
         { value:'medium', title:'Medium', desc:'5–8 Personen', tag:'Standard' },
         { value:'large', title:'Large', desc:'9–16 Personen', tag:'Groß' },
-        { value:'individual', title:'Individual', desc:'17+ Personen', tag:'Beratung' }
+        { value:'individual', title:'Individual', desc:'Komplexe AV-Projekte wie LED Wall, Hörsaal oder Veranstaltungsraum', tag:'Beratung', special:true }
       ]},
       { key:'budget', navLabel:'Budget', type:'single', title:'Welches Budget ist geplant?', subtitle:'Die Budgetspanne hilft bei der Einordnung der passenden Lösung.', helper:() => ['large','individual'].includes(state.answers.roomSize) ? 'Für große bzw. individuell geplante Räume ist ein Budget unter 5.000 € deaktiviert.' : '', options:[
         { value:'under_5000', title:'Unter 5.000 €', desc:'Einstiegslösung', tag:'Budget', disabled:() => ['large','individual'].includes(state.answers.roomSize) },
@@ -273,23 +284,24 @@
     }
 
     function imageOrFallback(option, fallback){
-      if(option.image) return `<div class="illu"><img src="${escapeHtml(option.image)}" alt="${escapeHtml(option.title)}" onerror="this.closest('.illu').innerHTML='<div class=\'placeholder\'>Bild-Platzhalter</div>'"></div>`;
+      if(option.image) return `<div class="illu"><img src="${escapeHtml(option.image)}" alt="${escapeHtml(option.title)}" onerror="this.closest('.illu').innerHTML='<div class=\\'placeholder\\'>Bild-Platzhalter</div>'"></div>`;
       return fallback;
     }
 
     function roomSvg(type, option){
       const data = {
-        huddle:{table:{x:48,y:18,w:64,h:64,rx:32}, seats:[[80,10],[118,50],[80,90],[42,50]]},
-        medium:{table:{x:34,y:28,w:92,h:44,rx:22}, seats:[[50,18],[66,18],[94,18],[110,18],[50,82],[66,82],[94,82],[110,82]]},
-        large:{table:{x:24,y:32,w:112,h:36,rx:18}, seats:[[38,20],[54,20],[70,20],[86,20],[102,20],[118,20],[38,80],[54,80],[70,80],[86,80],[102,80],[118,80]]},
-        individual:{table:{x:20,y:35,w:120,h:30,rx:15}, seats:[[30,18],[46,18],[62,18],[78,18],[94,18],[110,18],[126,18],[30,82],[46,82],[62,82],[78,82],[94,82],[110,82],[126,82],[14,35],[14,50],[14,65],[146,35],[146,50],[146,65]]}
+        huddle:{ table:{x:50,y:24,w:60,h:52,rx:26}, seats:[[80,22],[113,50],[80,78],[47,50]], peopleRadius:3.6, display:{x:60,y:8,w:40,h:8} },
+        medium:{ table:{x:28,y:34,w:104,h:32,rx:16}, seats:[[48,24],[70,24],[90,24],[112,24],[48,76],[70,76],[90,76],[112,76]], peopleRadius:3.5, display:{x:58,y:10,w:44,h:8} },
+        large:{ table:{x:22,y:36,w:116,h:28,rx:14}, seats:[[34,28],[50,28],[66,28],[82,28],[98,28],[114,28],[34,72],[50,72],[66,72],[82,72],[98,72],[114,72]], peopleRadius:3.3, display:{x:56,y:11,w:48,h:8} },
+        individual:{ table:{x:22,y:38,w:116,h:24,rx:12}, seats:[[32,28],[48,28],[64,28],[80,28],[96,28],[112,28],[128,28],[32,72],[48,72],[64,72],[80,72],[96,72],[112,72],[128,72],[16,36],[16,50],[16,64],[144,36],[144,50],[144,64]], peopleRadius:3.05, display:{x:48,y:8,w:64,h:10} }
       }[type];
       const t = data.table;
-      const seats = data.seats.map(([x,y]) => `<circle cx="${x}" cy="${y}" r="3.9" fill="rgba(0,157,223,.92)"/>`).join('');
+      const d = data.display;
+      const seats = data.seats.map(([x,y]) => `<circle cx="${x}" cy="${y}" r="${data.peopleRadius}" fill="rgba(0,157,223,.92)"/>`).join('');
       const label = type === 'individual'
-        ? '<rect x="48" y="8" width="64" height="12" rx="6" fill="#eaf7fd" stroke="#d4f2fd"/><text x="80" y="16.2" text-anchor="middle" font-size="6.4" fill="#087db0" font-family="Sora, sans-serif">INDIVIDUELL</text>'
-        : '<rect x="58" y="10" width="44" height="10" rx="5" fill="#009DDF" opacity=".14"/><rect x="70" y="12.5" width="20" height="5" rx="2.5" fill="#009DDF"/>';
-      return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><defs><linearGradient id="tg-${type}" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f2f1ed"/></linearGradient></defs>${label}<rect x="${t.x}" y="${t.y}" width="${t.w}" height="${t.h}" rx="${t.rx}" fill="url(#tg-${type})" stroke="#e3e0d9" stroke-width="1.3"/><rect x="${t.x+7}" y="${t.y+5}" width="${Math.max(18,t.w-14)}" height="${Math.max(10,t.h-10)}" rx="${Math.max(8,t.rx-7)}" fill="#fbfbf9" stroke="#efede7" stroke-width=".8"/>${seats}</svg></div>`);
+        ? `<rect x="${d.x}" y="${d.y}" width="${d.w}" height="${d.h}" rx="5" fill="#eaf7fd" stroke="#d4f2fd"/><text x="80" y="16" text-anchor="middle" font-size="6.1" fill="#087db0" font-family="Sora, sans-serif">LED / VIDEO WALL / HÖRSAAL</text>`
+        : `<rect x="${d.x}" y="${d.y}" width="${d.w}" height="${d.h}" rx="4" fill="#009DDF" opacity=".14"/><rect x="${d.x + 12}" y="${d.y + 2}" width="${Math.max(18,d.w - 24)}" height="${Math.max(3,d.h - 4)}" rx="2" fill="#009DDF"/>`;
+      return imageOrFallback(option, `<div class="illu"><svg viewBox="0 0 160 100"><defs><linearGradient id="tg-${type}" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#ffffff"/><stop offset="100%" stop-color="#f2f1ed"/></linearGradient></defs><rect x="16" y="18" width="128" height="68" rx="16" fill="#f7f7f4" stroke="#ece8df"/>${label}<rect x="${t.x}" y="${t.y}" width="${t.w}" height="${t.h}" rx="${t.rx}" fill="url(#tg-${type})" stroke="#e3e0d9" stroke-width="1.3"/><rect x="${t.x + 6}" y="${t.y + 4}" width="${Math.max(18,t.w - 12)}" height="${Math.max(10,t.h - 8)}" rx="${Math.max(7,t.rx - 5)}" fill="#fbfbf9" stroke="#efede7" stroke-width=".8"/>${seats}</svg></div>`);
     }
 
     function displaySvg(type, option){
@@ -315,6 +327,7 @@
 
     function genericPlaceholder(option, label){ return imageOrFallback(option, `<div class="illu"><div class="placeholder">${escapeHtml(label)}</div></div>`); }
     function renderIllustration(stepKey, option){
+      if(stepKey === 'roomSize' && option.special) return ''; // bewusst ohne Platzhalter/Logo für kompaktere Individual-Kachel
       if(stepKey === 'roomSize') return roomSvg(option.value, option);
       if(stepKey === 'display') return displaySvg(option.value, option);
       if(stepKey === 'doorSign') return doorSvg(option);
@@ -328,14 +341,15 @@
 
     function renderCards(step){
       const current = state.answers[step.key];
-      const colsClass = step.options.length === 2 ? 'cols-2' : step.options.length >= 4 ? 'cols-4' : '';
+      const colsClass = step.key === 'roomSize' ? 'step-room-size' : step.options.length === 2 ? 'cols-2' : step.options.length >= 4 ? 'cols-4' : '';
       const helper = typeof step.helper === 'function' ? step.helper() : '';
+      const intro = step.key === 'roomSize' ? `<div class="callout"><h3>Standard-MTR oder Sonderprojekt?</h3><p>Für einfache MTR-Räume nutzen Sie Huddle, Medium oder Large. Für LED Wall, Video Wall, Hörsaal, Veranstaltungsraum oder AV-Sonderprojekte wählen Sie Individual.</p></div>` : '';
       const cards = step.options.map(option => {
         const disabled = typeof option.disabled === 'function' ? option.disabled() : false;
         const selected = step.type === 'multi' ? current.includes(option.value) : current === option.value;
-        return `<button type="button" class="card ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''}" data-value="${option.value}" ${disabled ? 'disabled' : ''}><div class="meta"><div><div class="card-title">${escapeHtml(option.title)}</div><p class="card-desc">${escapeHtml(option.desc)}</p></div><span class="mini-label">${escapeHtml(option.tag || 'Option')}</span></div>${renderIllustration(step.key, option)}</button>`;
+        return `<button type="button" class="card ${selected ? 'selected' : ''} ${disabled ? 'disabled' : ''} ${option.special ? 'individual-card special-compact' : ''}" data-value="${option.value}" ${disabled ? 'disabled' : ''}><div class="meta"><div><div class="card-title">${escapeHtml(option.title)}</div><p class="card-desc">${escapeHtml(option.desc)}</p></div><span class="mini-label">${escapeHtml(option.tag || 'Option')}</span></div>${renderIllustration(step.key, option)}</button>`;
       }).join('');
-      return `${helper ? `<p class="helper">${escapeHtml(helper)}</p>` : ''}<div class="cards ${colsClass}">${cards}</div>`;
+      return `${intro}${helper ? `<p class="helper">${escapeHtml(helper)}</p>` : ''}<div class="cards ${colsClass}">${cards}</div>`;
     }
 
     function listLabels(key, values){
@@ -371,8 +385,8 @@
       const payload = getPayload();
       const individualOnly = isIndividualPath();
       return `
-        ${individualOnly ? '' : `<div class="summary-grid"><div class="summary-card"><h4>Raumgröße</h4><p>${escapeHtml(optionLabelMap.roomSize[state.answers.roomSize] || '-')}</p></div><div class="summary-card"><h4>Budget</h4><p>${escapeHtml(optionLabelMap.budget[state.answers.budget] || '-')}</p></div><div class="summary-card"><h4>Display</h4><p>${escapeHtml(optionLabelMap.display[state.answers.display] || '-')}</p></div><div class="summary-card"><h4>Türschild</h4><p>${escapeHtml(optionLabelMap.doorSign[state.answers.doorSign] || '-')}</p></div><div class="summary-card"><h4>Montage</h4><p>${escapeHtml(optionLabelMap.mounting[state.answers.mounting] || '-')}</p></div><div class="summary-card"><h4>Deckenmikrofon</h4><p>${escapeHtml(optionLabelMap.ceilingMic[state.answers.ceilingMic] || '-')}</p></div><div class="summary-card"><h4>Funktionen</h4>${listLabels('requirements', state.answers.requirements)}</div><div class="summary-card"><h4>Raumgegebenheiten</h4>${listLabels('roomConditions', state.answers.roomConditions)}</div><div class="summary-card"><h4>MTR-Hersteller</h4><p>${escapeHtml(optionLabelMap.manufacturer[state.answers.manufacturer] || '-')}</p></div></div>`}
-        <div class="summary-card" style="margin-bottom:10px;"><h4>${individualOnly ? 'Individuelle Anfrage' : 'Kontakt'}</h4>${individualOnly ? '<p style="margin:0 0 14px;color:var(--muted);">Für Räume ab 17 Personen nutzen wir direkt Ihre Kontaktdaten für eine individuelle Planung.</p>' : ''}<div class="form-grid"><div class="field"><label for="name">Name <span class="required">*</span></label><input id="name" placeholder="Max Mustermann" value="${escapeHtml(state.answers.contact.name)}" /></div><div class="field"><label for="company">Firma <span class="required">*</span></label><input id="company" placeholder="Muster GmbH" value="${escapeHtml(state.answers.contact.company)}" /></div><div class="field"><label for="email">E-Mail <span class="required">*</span></label><input id="email" type="email" placeholder="name@firma.de" value="${escapeHtml(state.answers.contact.email)}" /></div><div class="field"><label for="phone">Telefon <span class="required">*</span></label><input id="phone" placeholder="+49 ..." value="${escapeHtml(state.answers.contact.phone)}" /></div><div class="field full"><label for="message">Nachricht</label><textarea id="message" placeholder="Weitere Hinweise ...">${escapeHtml(state.answers.contact.message)}</textarea></div><div class="field full"><label class="check"><input id="privacy" type="checkbox" ${state.answers.contact.privacy ? 'checked' : ''} /><span>Ich stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu. <span class="required">*</span></span></label></div></div></div>
+        ${individualOnly ? `<div class="callout"><h3>Individual</h3><p>Dieser Weg ist für LED Wall, Video Wall, Hörsaal, Veranstaltungsraum und andere AV-/Medientechnik-Projekte gedacht. Der Konfigurator selbst bleibt bewusst auf einfache MTR-Räume fokussiert.</p></div>` : `<div class="summary-grid"><div class="summary-card"><h4>Raumgröße</h4><p>${escapeHtml(optionLabelMap.roomSize[state.answers.roomSize] || '-')}</p></div><div class="summary-card"><h4>Budget</h4><p>${escapeHtml(optionLabelMap.budget[state.answers.budget] || '-')}</p></div><div class="summary-card"><h4>Display</h4><p>${escapeHtml(optionLabelMap.display[state.answers.display] || '-')}</p></div><div class="summary-card"><h4>Türschild</h4><p>${escapeHtml(optionLabelMap.doorSign[state.answers.doorSign] || '-')}</p></div><div class="summary-card"><h4>Montage</h4><p>${escapeHtml(optionLabelMap.mounting[state.answers.mounting] || '-')}</p></div><div class="summary-card"><h4>Deckenmikrofon</h4><p>${escapeHtml(optionLabelMap.ceilingMic[state.answers.ceilingMic] || '-')}</p></div><div class="summary-card"><h4>Funktionen</h4>${listLabels('requirements', state.answers.requirements)}</div><div class="summary-card"><h4>Raumgegebenheiten</h4>${listLabels('roomConditions', state.answers.roomConditions)}</div><div class="summary-card"><h4>MTR-Hersteller</h4><p>${escapeHtml(optionLabelMap.manufacturer[state.answers.manufacturer] || '-')}</p></div></div>`}
+        <div class="summary-card" style="margin-bottom:10px;"><h4>${individualOnly ? 'Anfrage für Sonderprojekt' : 'Kontakt'}</h4>${individualOnly ? '<p style="margin:0 0 14px;color:var(--muted);">Im Nachrichtenfeld reichen wenige Stichworte, z. B. LED Wall, Hörsaal oder Veranstaltungsraum.</p>' : ''}<div class="form-grid"><div class="field"><label for="name">Name <span class="required">*</span></label><input id="name" placeholder="Max Mustermann" value="${escapeHtml(state.answers.contact.name)}" /></div><div class="field"><label for="company">Firma <span class="required">*</span></label><input id="company" placeholder="Muster GmbH" value="${escapeHtml(state.answers.contact.company)}" /></div><div class="field"><label for="email">E-Mail <span class="required">*</span></label><input id="email" type="email" placeholder="name@firma.de" value="${escapeHtml(state.answers.contact.email)}" /></div><div class="field"><label for="phone">Telefon <span class="required">*</span></label><input id="phone" placeholder="+49 ..." value="${escapeHtml(state.answers.contact.phone)}" /></div><div class="field full"><label for="message">Nachricht</label><textarea id="message" placeholder="Weitere Hinweise ...">${escapeHtml(state.answers.contact.message)}</textarea></div><div class="field full"><label class="check"><input id="privacy" type="checkbox" ${state.answers.contact.privacy ? 'checked' : ''} /><span>Ich stimme der Verarbeitung meiner Daten zur Bearbeitung meiner Anfrage zu. <span class="required">*</span></span></label></div></div></div>
         <div class="summary-card"><h4>Debug / Demo</h4><details class="debug"><summary><span>JSON Payload anzeigen</span><span>nur intern</span></summary><pre class="json-preview" id="jsonPreview">${escapeHtml(JSON.stringify(payload, null, 2))}</pre></details><div class="success" id="successBox">Vielen Dank. Die Demo hat den Payload erfolgreich an den vorbereiteten API-Layer übergeben.</div></div>`;
     }
 
@@ -384,9 +398,7 @@
           const value = card.dataset.value;
           if(step.type === 'single'){
             state.answers[step.key] = value; updateDependencies(step.key, value);
-            if(step.key === 'roomSize' && value === 'individual'){
-              const target = summaryIndex(); state.currentStep = target; markVisited(target); render(); return;
-            }
+
           } else {
             const list = state.answers[step.key]; const idx = list.indexOf(value); if(idx > -1) list.splice(idx,1); else list.push(value);
           }
@@ -412,7 +424,7 @@
       renderStepNav();
       if(step.type === 'summary'){
         els.content.innerHTML = renderSummary(); bindSummaryInputs(); els.nextBtn.textContent = 'Anfrage absenden';
-        els.footerNote.textContent = isIndividualPath() ? 'Kontaktdaten für Ihre individuelle Anfrage eingeben.' : 'Pflichtfelder ausfüllen und Datenschutz bestätigen.';
+        els.footerNote.textContent = isIndividualPath() ? 'Kontaktdaten für Ihr Sonderprojekt oder Ihre individuelle Anfrage eingeben.' : 'Pflichtfelder ausfüllen und Datenschutz bestätigen.';
       } else {
         els.content.innerHTML = renderCards(step); bindCardEvents(step); els.nextBtn.textContent = 'Weiter';
         if(step.optional && step.type === 'multi') els.footerNote.textContent = 'Mehrfachauswahl möglich – dieser Schritt ist optional.';
@@ -433,7 +445,15 @@
     els.nextBtn.addEventListener('click', async () => {
       if(!canContinue()) return;
       const step = steps[state.currentStep];
-      if(step.type !== 'summary'){ state.currentStep += 1; markVisited(state.currentStep); render(); return; }
+      if(step.type !== 'summary'){
+        if(step.key === 'roomSize' && state.answers.roomSize === 'individual'){
+          const target = summaryIndex();
+          state.currentStep = target;
+          markVisited(target);
+          render();
+          return;
+        }
+        state.currentStep += 1; markVisited(state.currentStep); render(); return; }
       els.nextBtn.disabled = true; els.nextBtn.textContent = 'Wird gesendet ...';
       try {
         const result = await apiService.submitLead(getPayload());
